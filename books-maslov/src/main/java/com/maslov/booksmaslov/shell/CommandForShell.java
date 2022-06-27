@@ -2,7 +2,6 @@ package com.maslov.booksmaslov.shell;
 
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.repository.BookDao;
-import liquibase.pro.packaged.S;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 

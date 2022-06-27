@@ -2,7 +2,6 @@ package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.repository.BookDao;
-import liquibase.pro.packaged.B;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -31,8 +30,8 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public void createBook(int id, String name, String author, String year, String genre) {
-        Book book = new Book(id, name, author, year, genre);
-        jdbc.update("insert into book (id, name) values (?, ?)", book.getId(), book.getName());
+        jdbc.update("insert into book (id, name, author, year, genre) " +
+                "values (?, ?, ?, ?, ?)", id, name, author, year, genre);
     }
 
     @Override

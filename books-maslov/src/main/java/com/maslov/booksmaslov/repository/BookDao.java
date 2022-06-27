@@ -2,7 +2,6 @@ package com.maslov.booksmaslov.repository;
 
 import com.maslov.booksmaslov.domain.Book;
 
-import java.math.BigInteger;
 import java.util.List;
 
 public interface BookDao {
