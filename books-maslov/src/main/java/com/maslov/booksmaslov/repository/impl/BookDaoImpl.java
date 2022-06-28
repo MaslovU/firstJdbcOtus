@@ -20,7 +20,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> getAllBook() {
-        return null;
+        return jdbc.query("select * from persons", new PersonMapper());
     }
 
     @Override
@@ -29,19 +29,27 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void createBook(int id, String name, String author, String year, String genre) {
+    public List<Book> getBooksByName(String name) {
+        return jdbc.query("select * from book where name =?", new PersonMapper(), name);
+    }
+
+    @Override
+    public void createBook(String name, String author, String year, String genre) {
+        int id = getAllBook().size() + 1;
         jdbc.update("insert into book (id, name, author, year, genre) " +
                 "values (?, ?, ?, ?, ?)", id, name, author, year, genre);
     }
 
     @Override
-    public Book updateBook(Long id) {
-        return null;
+    public Book updateBook(int id, String name, String author, String year, String genre) {
+        jdbc.update("update book set id=?, name=?, author=?, year=?, genre=? " +
+                "where id=?", id, name, author, year, genre);
+        return getBookById(id);
     }
 
     @Override
     public void deleteBook(Long id) {
-
+        jdbc.update("delete from book where id=?", id);
     }
 
     private static class PersonMapper implements RowMapper<Book> {

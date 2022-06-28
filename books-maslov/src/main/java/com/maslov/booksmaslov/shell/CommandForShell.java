@@ -21,12 +21,11 @@ public class CommandForShell {
     @ShellMethod(value = "Create book", key = {"createBook"})
     public void createBook() {
         System.out.println("Hello");
-        int id = 0;
         String name = null;
         String author = null;
         String year = null;
         String genre = null;
-        bookDao.createBook(id, name, author, year, genre);
+        bookDao.createBook(name, author, year, genre);
     }
 
     @ShellMethod(value = "Get book", key = {"g", "getbook"})

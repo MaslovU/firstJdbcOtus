@@ -8,10 +8,11 @@ public interface BookDao {
     List<Book> getAllBook();
 
     Book getBookById(int id);
+    List<Book> getBooksByName(String name);
 
-    void createBook(int id, String name, String author, String year, String genre);
-
-    Book updateBook(Long id);
+    void createBook(String name, String author, String year, String genre);
 
     void deleteBook(Long id);
+
+    Book updateBook(int id, String name, String author, String year, String genre);
 }
