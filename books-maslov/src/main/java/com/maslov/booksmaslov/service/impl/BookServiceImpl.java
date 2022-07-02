@@ -13,13 +13,12 @@ import java.util.Scanner;
 
 @Service
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Slf4j
 public class BookServiceImpl implements BookService {
     private final String ENTER_ID = "Enter ID for book or 0 is your dont now ID";
     private final String GET_ALL = "Enter command 'getall' for search your book in list";
 
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
     private BookDao bookDao;
 
     @Override
