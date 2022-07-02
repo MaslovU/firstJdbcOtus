@@ -6,7 +6,10 @@ import java.util.List;
 
 public interface AuthorDao {
     List<Author> getAllNames();
+
     Author getByName(String name);
+
     String getAuthorId(String name);
+
     int createAuthor(String name);
 }

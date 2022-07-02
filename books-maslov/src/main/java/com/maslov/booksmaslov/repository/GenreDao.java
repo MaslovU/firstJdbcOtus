@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface GenreDao {
     List<Genre> getAllNames();
+
     int createGenre(String name);
+
     String getAuthorId(String name);
 }
