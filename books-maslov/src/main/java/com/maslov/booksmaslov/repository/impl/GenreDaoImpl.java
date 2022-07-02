@@ -24,6 +24,11 @@ public class GenreDaoImpl implements GenreDao {
         return jdbc.query("select * from genre", new GenreDaoImpl.GenreMapper());
     }
 
+    @Override
+    public String getNameById(int id) {
+        return jdbc.queryForObject("select * from genre where id =?", new GenreDaoImpl.GenreMapper(), id).getName();
+    }
+
     public Genre getByName(String name) {
         return jdbc.queryForObject("select * from genre where name =?", new GenreDaoImpl.GenreMapper(), name);
     }

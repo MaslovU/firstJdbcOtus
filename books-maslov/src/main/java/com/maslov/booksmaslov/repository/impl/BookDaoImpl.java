@@ -30,13 +30,13 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> getAllBook() {
-        return jdbc.query("select * from book", new BookMapper());
+        return jdbc.query("select * from book", new BookMapper(authorDao, genreDao));
     }
 
     @Override
     public Book getBookById(int id) {
         try {
-            return jdbc.queryForObject("select * from public.book where id =?", new BookMapper(), id);
+            return jdbc.queryForObject("select * from public.book where id =?", new BookMapper(authorDao, genreDao), id);
         } catch (EmptyResultDataAccessException e) {
             log.error("Book with this id is not exist");
         }
@@ -45,7 +45,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> getBooksByName(String name) {
-        return jdbc.query("select * from book where name =?", new BookMapper(), name);
+        return jdbc.query("select * from book where name =?", new BookMapper(authorDao, genreDao), name);
     }
 
     @Override
@@ -71,15 +71,25 @@ public class BookDaoImpl implements BookDao {
 
     private static class BookMapper implements RowMapper<Book> {
 
+        private final AuthorDao authorDao;
+        private final GenreDao genreDao;
+
+        private BookMapper(AuthorDao authorDao, GenreDao genreDao) {
+            this.authorDao = authorDao;
+            this.genreDao = genreDao;
+        }
+
         @Override
         public Book mapRow(ResultSet resultSet, int i) throws SQLException {
 
             int id = resultSet.getInt("id");
             String name = resultSet.getString("name");
-            String authorId = resultSet.getString("author_id");
+            int authorId = Integer.parseInt(resultSet.getString("author_id"));
+            String author = authorDao.getNameById(authorId);
             String year = resultSet.getString("year_of_publishing");
-            String genreId = resultSet.getString("genre_id");
-            return new Book(id, name, authorId, year, genreId);
+            int genreId = Integer.parseInt(resultSet.getString("genre_id"));
+            String genre = genreDao.getNameById(genreId);
+            return new Book(id, name, author, year, genre);
         }
     }
 }

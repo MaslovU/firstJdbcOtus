@@ -31,6 +31,11 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
+    public String getNameById(int id) {
+        return jdbc.queryForObject("select * from author where id =?", new AuthorDaoImpl.AuthorMapper(), id).getName();
+    }
+
+    @Override
     public String getAuthorId(String name) {
         try {
             return String.valueOf(getByName(name).getId());
@@ -51,7 +56,6 @@ public class AuthorDaoImpl implements AuthorDao {
     private static class AuthorMapper implements RowMapper<Author> {
         @Override
         public Author mapRow(ResultSet resultSet, int i) throws SQLException {
-
             int id = resultSet.getInt("id");
             String name = resultSet.getString("name");
             return new Author(id, name);

@@ -9,6 +9,8 @@ public interface AuthorDao {
 
     Author getByName(String name);
 
+    String getNameById(int id);
+
     String getAuthorId(String name);
 
     int createAuthor(String name);
