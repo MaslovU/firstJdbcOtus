@@ -7,32 +7,44 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.maslov.booksmaslov.sql.SQLConstants.CREATE_AUTHOR;
+import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_AUTHORS;
+import static com.maslov.booksmaslov.sql.SQLConstants.GET_AUTHOR_BY_ID;
+import static com.maslov.booksmaslov.sql.SQLConstants.GET_AUTHOR_BY_NAME;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class AuthorDaoImpl implements AuthorDao {
 
-    private final JdbcOperations jdbc;
+    private final NamedParameterJdbcTemplate jdbc;
 
     @Override
     public List<Author> getAllNames() {
-        return jdbc.query("select * from author", new AuthorDaoImpl.AuthorMapper());
+        return jdbc.query(GET_ALL_AUTHORS, new AuthorDaoImpl.AuthorMapper());
     }
 
     @Override
     public Author getByName(String name) {
-        return jdbc.queryForObject("select * from author where name =?", new AuthorDaoImpl.AuthorMapper(), name);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("name", name);
+        return jdbc.queryForObject(GET_AUTHOR_BY_NAME, paramMap, new AuthorDaoImpl.AuthorMapper());
     }
 
     @Override
-    public String getNameById(int id) {
-        return jdbc.queryForObject("select * from author where id =?", new AuthorDaoImpl.AuthorMapper(), id).getName();
+    public Author getNameById(int id) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        return jdbc.queryForObject(GET_AUTHOR_BY_ID, paramMap, new AuthorDaoImpl.AuthorMapper());
     }
 
     @Override
@@ -48,7 +60,10 @@ public class AuthorDaoImpl implements AuthorDao {
     public int createAuthor(String name) {
         log.info("Created new Author");
         int id = getAllNames().size() + 1;
-        jdbc.update("insert into author (id, name) values (?, ?)", id, name);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        paramMap.put("name", name);
+        jdbc.update(CREATE_AUTHOR, paramMap);
         return id;
     }
 

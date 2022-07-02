@@ -28,7 +28,6 @@ import static com.maslov.booksmaslov.sql.SQLConstants.UPDATE_BOOK_BY_ID;
 @Slf4j
 @AllArgsConstructor
 public class BookDaoImpl implements BookDao {
-    private final JdbcOperations jdbc;
     private final NamedParameterJdbcTemplate namedParamJdbcTempl;
 
     private final AuthorDao authorDao;
@@ -105,10 +104,10 @@ public class BookDaoImpl implements BookDao {
             int id = resultSet.getInt("id");
             String name = resultSet.getString("name");
             int authorId = Integer.parseInt(resultSet.getString("author_id"));
-            String author = authorDao.getNameById(authorId);
+            String author = authorDao.getNameById(authorId).getName();
             String year = resultSet.getString("year_of_publishing");
             int genreId = Integer.parseInt(resultSet.getString("genre_id"));
-            String genre = genreDao.getNameById(genreId);
+            String genre = genreDao.getNameById(genreId).getName();
             return new Book(id, name, author, year, genre);
         }
     }

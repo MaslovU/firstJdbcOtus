@@ -7,7 +7,7 @@ import java.util.List;
 public interface GenreDao {
     List<Genre> getAllNames();
 
-    String getNameById(int id);
+    Genre getNameById(int id);
 
     int createGenre(String name);
 

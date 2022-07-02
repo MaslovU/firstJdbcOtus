@@ -5,32 +5,49 @@ import com.maslov.booksmaslov.repository.GenreDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.maslov.booksmaslov.sql.SQLConstants.CREATE_GENRE;
+import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_GENRES;
+import static com.maslov.booksmaslov.sql.SQLConstants.GET_GENRE_BY_ID;
+import static com.maslov.booksmaslov.sql.SQLConstants.GET_GENRE_BY_NAME;
 
 @RequiredArgsConstructor
 @Component
 @Slf4j
 public class GenreDaoImpl implements GenreDao {
-    private final JdbcOperations jdbc;
+    private final NamedParameterJdbcTemplate jdbc;
 
     @Override
     public List<Genre> getAllNames() {
-        return jdbc.query("select * from genre", new GenreDaoImpl.GenreMapper());
+        return jdbc.query(GET_ALL_GENRES, new GenreDaoImpl.GenreMapper());
     }
 
     @Override
-    public String getNameById(int id) {
-        return jdbc.queryForObject("select * from genre where id =?", new GenreDaoImpl.GenreMapper(), id).getName();
+    public Genre getNameById(int id) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        try {
+            return jdbc.queryForObject(GET_GENRE_BY_ID, paramMap, new GenreDaoImpl.GenreMapper());
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Book with this id is not exist");
+        }
+        return null;
     }
 
+
     public Genre getByName(String name) {
-        return jdbc.queryForObject("select * from genre where name =?", new GenreDaoImpl.GenreMapper(), name);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("name", name);
+        return jdbc.queryForObject(GET_GENRE_BY_NAME, paramMap, new GenreDaoImpl.GenreMapper());
     }
 
     @Override
@@ -46,14 +63,16 @@ public class GenreDaoImpl implements GenreDao {
     public int createGenre(String name) {
         log.info("Created new Genre");
         int id = getAllNames().size() + 1;
-        jdbc.update("insert into genre (id, name) values (?, ?)", id, name);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        paramMap.put("name", name);
+        jdbc.update(CREATE_GENRE, paramMap);
         return id;
     }
 
     private static class GenreMapper implements RowMapper<Genre> {
         @Override
         public Genre mapRow(ResultSet resultSet, int i) throws SQLException {
-
             int id = resultSet.getInt("id");
             String name = resultSet.getString("name");
             return new Genre(id, name);
