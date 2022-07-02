@@ -18,13 +18,16 @@ public class CommandForShell {
 
     Scanner scanner = new Scanner(System.in);
 
-    @ShellMethod(value = "Create book", key = {"createBook"})
+    @ShellMethod(value = "Create book", key = {"createBook", "cr"})
     public void createBook() {
-        System.out.println("Hello");
-        String name = null;
-        String author = null;
-        String year = null;
-        String genre = null;
+        System.out.println("Enter name of the book");
+        String name = scanner.nextLine();
+        System.out.println("Enter name of the author");
+        String author = scanner.nextLine();
+        System.out.println("Enter year of publish");
+        String year = scanner.nextLine();
+        System.out.println("Enter name of the genre");
+        String genre = scanner.nextLine();
         bookDao.createBook(name, author, year, genre);
     }
 
@@ -35,9 +38,4 @@ public class CommandForShell {
         Book book = bookDao.getBookById(id);
         System.out.println(book);
     }
-
-//    @ShellMethod
-//    public Long getId() {
-//
-//    }
 }

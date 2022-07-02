@@ -1,7 +1,11 @@
 package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Book;
+import com.maslov.booksmaslov.repository.AuthorDao;
 import com.maslov.booksmaslov.repository.BookDao;
+import com.maslov.booksmaslov.repository.GenreDao;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -11,33 +15,46 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Component
+@Slf4j
 public class BookDaoImpl implements BookDao {
     private final JdbcOperations jdbc;
 
-    public BookDaoImpl(JdbcOperations jdbc) {
+    private final AuthorDao authorDao;
+    private final GenreDao genreDao;
+
+    public BookDaoImpl(JdbcOperations jdbc, AuthorDao authorDao, GenreDao genreDao) {
         this.jdbc = jdbc;
+        this.authorDao = authorDao;
+        this.genreDao = genreDao;
     }
 
     @Override
     public List<Book> getAllBook() {
-        return jdbc.query("select * from persons", new PersonMapper());
+        return jdbc.query("select * from book", new BookMapper());
     }
 
     @Override
     public Book getBookById(int id) {
-        return jdbc.queryForObject("select * from public.book where id =?", new PersonMapper(), id);
+        try {
+            return jdbc.queryForObject("select * from public.book where id =?", new BookMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Book with this id is not exist");
+        }
+        return null;
     }
 
     @Override
     public List<Book> getBooksByName(String name) {
-        return jdbc.query("select * from book where name =?", new PersonMapper(), name);
+        return jdbc.query("select * from book where name =?", new BookMapper(), name);
     }
 
     @Override
     public void createBook(String name, String author, String year, String genre) {
         int id = getAllBook().size() + 1;
-        jdbc.update("insert into book (id, name, author, year, genre) " +
-                "values (?, ?, ?, ?, ?)", id, name, author, year, genre);
+        String authorId = authorDao.getAuthorId(author);
+        String genreId = genreDao.getAuthorId(genre);
+        jdbc.update("insert into book (id, name, author_id, year_of_publishing, genre_id) " +
+                "values (?, ?, ?, ?, ?)", id, name, authorId, year, genreId);
     }
 
     @Override
@@ -52,7 +69,7 @@ public class BookDaoImpl implements BookDao {
         jdbc.update("delete from book where id=?", id);
     }
 
-    private static class PersonMapper implements RowMapper<Book> {
+    private static class BookMapper implements RowMapper<Book> {
 
         @Override
         public Book mapRow(ResultSet resultSet, int i) throws SQLException {
