@@ -4,6 +4,7 @@ import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.repository.AuthorDao;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.repository.GenreDao;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -25,19 +26,13 @@ import static com.maslov.booksmaslov.sql.SQLConstants.UPDATE_BOOK_BY_ID;
 
 @Component
 @Slf4j
+@AllArgsConstructor
 public class BookDaoImpl implements BookDao {
     private final JdbcOperations jdbc;
     private final NamedParameterJdbcTemplate namedParamJdbcTempl;
 
     private final AuthorDao authorDao;
     private final GenreDao genreDao;
-
-    public BookDaoImpl(JdbcOperations jdbc, AuthorDao authorDao, GenreDao genreDao) {
-        this.jdbc = jdbc;
-        this.authorDao = authorDao;
-        this.genreDao = genreDao;
-        this.namedParamJdbcTempl = new NamedParameterJdbcTemplate(jdbc);
-    }
 
     @Override
     public List<Book> getAllBook() {
@@ -75,14 +70,14 @@ public class BookDaoImpl implements BookDao {
         return getBookById(id);
     }
 
-    private void getAuthorId(int id, String name, String author, String year, String genre, String sql) {
+    private void getAuthorId(int id, String name, String author, String yearOfPublishing, String genre, String sql) {
         String authorId = authorDao.getAuthorId(author);
         String genreId = genreDao.getAuthorId(genre);
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("id", id);
         paramMap.put("name", name);
         paramMap.put("author_id", authorId);
-        paramMap.put("year_of_publishing", year);
+        paramMap.put("year_of_publishing", yearOfPublishing);
         paramMap.put("genre_id", genreId);
         namedParamJdbcTempl.update(sql, paramMap);
     }

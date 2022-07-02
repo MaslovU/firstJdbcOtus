@@ -43,29 +43,29 @@ public class BookServiceImpl implements BookService {
     @Override
     public void createBook() {
         System.out.println("Enter name of the book");
-        String name = scanner.nextLine();
+        String name = scanner.next();
         System.out.println("Enter name of the author");
-        String author = scanner.nextLine();
+        String author = scanner.next();
         System.out.println("Enter year of publish");
-        String year = scanner.nextLine();
+        String year = scanner.next();
         System.out.println("Enter name of the genre");
-        String genre = scanner.nextLine();
+        String genre = scanner.next();
         bookDao.createBook(name, author, year, genre);
     }
 
     @Override
     public void updateBook() {
         System.out.println(ENTER_ID);
-        int id = Integer.parseInt(scanner.nextLine());
+        int id = scanner.nextInt();
         if (id > 0) {
             System.out.println("Enter correct name of the book");
-            String name = scanner.nextLine();
+            String name = scanner.next();
             System.out.println("Enter correct name of the author");
-            String author = scanner.nextLine();
+            String author = scanner.next();
             System.out.println("Enter correct year of publish");
-            String year = scanner.nextLine();
+            String year = scanner.next();
             System.out.println("Enter correct name of the genre");
-            String genre = scanner.nextLine();
+            String genre = scanner.next();
             log.info(bookDao.updateBook(id, name, author, year, genre).toString());
         } else {
             System.out.println(GET_ALL);
