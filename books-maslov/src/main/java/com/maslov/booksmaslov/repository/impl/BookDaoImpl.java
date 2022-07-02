@@ -65,7 +65,7 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void deleteBook(Long id) {
+    public void deleteBook(int id) {
         jdbc.update("delete from book where id=?", id);
     }
 

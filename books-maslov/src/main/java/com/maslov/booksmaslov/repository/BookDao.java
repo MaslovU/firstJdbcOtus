@@ -13,7 +13,7 @@ public interface BookDao {
 
     void createBook(String name, String author, String year, String genre);
 
-    void deleteBook(Long id);
+    void deleteBook(int id);
 
     Book updateBook(int id, String name, String author, String year, String genre);
 }
