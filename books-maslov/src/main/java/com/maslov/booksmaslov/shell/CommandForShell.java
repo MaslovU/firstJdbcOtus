@@ -60,7 +60,7 @@ public class CommandForShell {
     @ShellMethod(value = "Update book", key = {"updateBook", "upd"})
     public void updateBook() {
         System.out.println(ENTER_ID);
-        int id = scanner.nextInt();
+        int id = Integer.parseInt(scanner.nextLine());
         if (id > 0) {
             System.out.println("Enter correct name of the book");
             String name = scanner.nextLine();

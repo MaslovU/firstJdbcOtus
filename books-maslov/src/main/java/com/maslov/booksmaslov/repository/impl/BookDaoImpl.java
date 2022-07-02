@@ -8,16 +8,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.maslov.booksmaslov.sql.SQLConstants.DELETE_BOOK;
+import static com.maslov.booksmaslov.sql.SQLConstants.INSERT_INTO_BOOK;
+import static com.maslov.booksmaslov.sql.SQLConstants.SELECT_BOOK_BY_ID;
+import static com.maslov.booksmaslov.sql.SQLConstants.SELECT_BOOK_BY_NAME;
+import static com.maslov.booksmaslov.sql.SQLConstants.UPDATE_BOOK_BY_ID;
 
 @Component
 @Slf4j
 public class BookDaoImpl implements BookDao {
     private final JdbcOperations jdbc;
+    private final NamedParameterJdbcTemplate namedParamJdbcTempl;
 
     private final AuthorDao authorDao;
     private final GenreDao genreDao;
@@ -26,17 +36,20 @@ public class BookDaoImpl implements BookDao {
         this.jdbc = jdbc;
         this.authorDao = authorDao;
         this.genreDao = genreDao;
+        this.namedParamJdbcTempl = new NamedParameterJdbcTemplate(jdbc);
     }
 
     @Override
     public List<Book> getAllBook() {
-        return jdbc.query("select * from book", new BookMapper(authorDao, genreDao));
+        return namedParamJdbcTempl.query("select * from book", new BookMapper(authorDao, genreDao));
     }
 
     @Override
     public Book getBookById(int id) {
         try {
-            return jdbc.queryForObject("select * from public.book where id =?", new BookMapper(authorDao, genreDao), id);
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("id", id);
+            return namedParamJdbcTempl.queryForObject(SELECT_BOOK_BY_ID, paramMap, new BookMapper(authorDao, genreDao));
         } catch (EmptyResultDataAccessException e) {
             log.error("Book with this id is not exist");
         }
@@ -45,28 +58,40 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> getBooksByName(String name) {
-        return jdbc.query("select * from book where name =?", new BookMapper(authorDao, genreDao), name);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("name", name);
+        return namedParamJdbcTempl.query(SELECT_BOOK_BY_NAME, paramMap, new BookMapper(authorDao, genreDao));
     }
 
     @Override
     public void createBook(String name, String author, String year, String genre) {
         int id = getAllBook().size() + 1;
-        String authorId = authorDao.getAuthorId(author);
-        String genreId = genreDao.getAuthorId(genre);
-        jdbc.update("insert into book (id, name, author_id, year_of_publishing, genre_id) " +
-                "values (?, ?, ?, ?, ?)", id, name, authorId, year, genreId);
+        getAuthorId(id, name, author, year, genre, INSERT_INTO_BOOK);
     }
 
     @Override
     public Book updateBook(int id, String name, String author, String year, String genre) {
-        jdbc.update("update book set id=?, name=?, author=?, year=?, genre=? " +
-                "where id=?", id, name, author, year, genre);
+        getAuthorId(id, name, author, year, genre, UPDATE_BOOK_BY_ID);
         return getBookById(id);
+    }
+
+    private void getAuthorId(int id, String name, String author, String year, String genre, String sql) {
+        String authorId = authorDao.getAuthorId(author);
+        String genreId = genreDao.getAuthorId(genre);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        paramMap.put("name", name);
+        paramMap.put("author_id", authorId);
+        paramMap.put("year_of_publishing", year);
+        paramMap.put("genre_id", genreId);
+        namedParamJdbcTempl.update(sql, paramMap);
     }
 
     @Override
     public void deleteBook(int id) {
-        jdbc.update("delete from book where id=?", id);
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        namedParamJdbcTempl.update(DELETE_BOOK, paramMap);
     }
 
     private static class BookMapper implements RowMapper<Book> {
