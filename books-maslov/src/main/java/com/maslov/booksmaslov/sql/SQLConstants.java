@@ -4,6 +4,7 @@ public class SQLConstants {
     private SQLConstants() {
     }
 
+    public static final String GET_ALL_BOOKS = "select * from book";
     public static final String SELECT_BOOK_BY_ID = "select * from book where id =:id";
     public static final String SELECT_BOOK_BY_NAME = "select * from book where name =: name";
     public static final String UPDATE_BOOK_BY_ID = "update book set id=:id, name=:name, author_id=:author_id, " +
