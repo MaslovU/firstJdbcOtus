@@ -7,13 +7,13 @@ import com.maslov.booksmaslov.repository.GenreDao;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,17 +59,26 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public void createBook(String name, String author, String year, String genre) {
-        int id = getAllBook().size() + 1;
-        getAuthorId(id, name, author, year, genre, INSERT_INTO_BOOK);
+        List<Book> books = getAllBook();
+        Collections.sort(books);
+        int id = books.get(books.size() - 1).getId() + 1;
+        getQuery(id, name, author, year, genre, INSERT_INTO_BOOK);
     }
 
     @Override
     public Book updateBook(int id, String name, String author, String year, String genre) {
-        getAuthorId(id, name, author, year, genre, UPDATE_BOOK_BY_ID);
+        getQuery(id, name, author, year, genre, UPDATE_BOOK_BY_ID);
         return getBookById(id);
     }
 
-    private void getAuthorId(int id, String name, String author, String yearOfPublishing, String genre, String sql) {
+    @Override
+    public void deleteBook(int id) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", id);
+        namedParamJdbcTempl.update(DELETE_BOOK, paramMap);
+    }
+
+    private void getQuery(int id, String name, String author, String yearOfPublishing, String genre, String sql) {
         String authorId = authorDao.getAuthorId(author);
         String genreId = genreDao.getAuthorId(genre);
         Map<String, Object> paramMap = new HashMap<>();
@@ -79,13 +88,6 @@ public class BookDaoImpl implements BookDao {
         paramMap.put("year_of_publishing", yearOfPublishing);
         paramMap.put("genre_id", genreId);
         namedParamJdbcTempl.update(sql, paramMap);
-    }
-
-    @Override
-    public void deleteBook(int id) {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", id);
-        namedParamJdbcTempl.update(DELETE_BOOK, paramMap);
     }
 
     private static class BookMapper implements RowMapper<Book> {

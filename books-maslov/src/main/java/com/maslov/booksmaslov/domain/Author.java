@@ -5,7 +5,12 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class Author {
-    private final int id;
+public class Author implements Comparable<Author> {
+    private final Integer id;
     private final String name;
+
+    @Override
+    public int compareTo(Author o) {
+        return this.getId().compareTo(o.getId());
+    }
 }

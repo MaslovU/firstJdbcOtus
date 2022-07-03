@@ -5,7 +5,6 @@ import com.maslov.booksmaslov.repository.AuthorDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -44,7 +43,12 @@ public class AuthorDaoImpl implements AuthorDao {
     public Author getNameById(int id) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("id", id);
-        return jdbc.queryForObject(GET_AUTHOR_BY_ID, paramMap, new AuthorDaoImpl.AuthorMapper());
+        try {
+            return jdbc.queryForObject(GET_AUTHOR_BY_ID, paramMap, new AuthorDaoImpl.AuthorMapper());
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Book with this id is not exist");
+        }
+        return null;
     }
 
     @Override

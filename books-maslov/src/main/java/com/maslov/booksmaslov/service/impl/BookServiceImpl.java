@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -26,7 +28,11 @@ public class BookServiceImpl implements BookService {
         int id = helper.getIdFromUser();
         if (id > 0) {
             Book book = bookDao.getBookById(id);
-            System.out.println(book);
+            if (nonNull(book)) {
+                System.out.println(book);
+            } else {
+                System.out.println("Book with this id is not exist");
+            }
         } else {
             System.out.println(GET_ALL);
         }

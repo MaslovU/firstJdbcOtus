@@ -8,24 +8,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
 @Import({BookDaoImpl.class, GenreDaoImpl.class, AuthorDaoImpl.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookDaoImplTest {
-
+    private static final int ID = 3;
+    private static final String KOTLIN = "kotlin";
+    private static final int EXPECTED_ID = 5;
+    private static final String TEST = "Test";
+    private static final int INDEX_OF_BOOK = 0;
     @Autowired
     BookDao bookDao;
 
@@ -37,54 +34,56 @@ class BookDaoImplTest {
 
     @Test
     void getAllBook() {
-        List<Book> books = new ArrayList<>();
-        Book book = new Book(1, "any","gov","2022", "study");
 
         List<Book> list = bookDao.getAllBook();
-        System.out.println("eeee");
+
+        assertThat(list.size()).isNotZero();
     }
 
     @Test
     void getBookById() {
+        Book book = bookDao.getBookById(EXPECTED_ID);
+
+        assertThat(book.getName()).isEqualTo(KOTLIN);
     }
 
     @Test
     void getBooksByName() {
+        List<Book> books = bookDao.getBooksByName(KOTLIN);
+
+        assertThat(books.get(0).getId()).isEqualTo(EXPECTED_ID);
     }
 
     @Test
     void createBook() {
+        String name = TEST;
+        String author = TEST;
+        String year = TEST;
+        String genre = TEST;
+        bookDao.createBook(name, author, year, genre);
+
+        assertThat(bookDao.getBooksByName(name).get(INDEX_OF_BOOK).getName()).isEqualTo(name);
     }
 
     @Test
     void updateBook() {
+        int id = ID;
+        String name = TEST;
+        String author = TEST;
+        String year = TEST;
+        String genre = TEST;
+
+        Book book = bookDao.updateBook(id, name, author, year, genre);
+
+        assertThat(book.getName()).isEqualTo(name);
     }
 
     @Test
     void deleteBook() {
-    }
+        List<Book> booksBefore = bookDao.getAllBook();
+        bookDao.deleteBook(ID);
+        List<Book> booksAfter = bookDao.getAllBook();
 
-    private static class BookMapper implements RowMapper<Book> {
-
-        private final AuthorDao authorDao;
-        private final GenreDao genreDao;
-
-        private BookMapper(AuthorDao authorDao, GenreDao genreDao) {
-            this.authorDao = authorDao;
-            this.genreDao = genreDao;
-        }
-
-        @Override
-        public Book mapRow(ResultSet resultSet, int i) throws SQLException {
-
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            int authorId = Integer.parseInt(resultSet.getString("author_id"));
-            String author = authorDao.getNameById(authorId).getName();
-            String year = resultSet.getString("year_of_publishing");
-            int genreId = Integer.parseInt(resultSet.getString("genre_id"));
-            String genre = genreDao.getNameById(genreId).getName();
-            return new Book(id, name, author, year, genre);
-        }
+        assertThat(booksAfter).hasSize(booksBefore.size() - 1);
     }
 }

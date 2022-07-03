@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class GenreDaoImpl implements GenreDao {
     private final NamedParameterJdbcTemplate jdbc;
 
     @Override
-    public List<Genre> getAllNames() {
+    public List<Genre> getAllGenres() {
         return jdbc.query(GET_ALL_GENRES, new GenreDaoImpl.GenreMapper());
     }
 
@@ -43,7 +44,7 @@ public class GenreDaoImpl implements GenreDao {
         return null;
     }
 
-
+    @Override
     public Genre getByName(String name) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("name", name);
@@ -62,7 +63,9 @@ public class GenreDaoImpl implements GenreDao {
     @Override
     public int createGenre(String name) {
         log.info("Created new Genre");
-        int id = getAllNames().size() + 1;
+        List<Genre> genres = getAllGenres();
+        Collections.sort(genres);
+        int id = genres.get(genres.size() - 1).getId() + 1;
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("id", id);
         paramMap.put("name", name);
@@ -73,7 +76,7 @@ public class GenreDaoImpl implements GenreDao {
     private static class GenreMapper implements RowMapper<Genre> {
         @Override
         public Genre mapRow(ResultSet resultSet, int i) throws SQLException {
-            int id = resultSet.getInt("id");
+            Integer id = resultSet.getInt("id");
             String name = resultSet.getString("name");
             return new Genre(id, name);
         }
