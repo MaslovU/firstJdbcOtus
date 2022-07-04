@@ -106,7 +106,7 @@ public class BookDaoImpl implements BookDao {
             int id = resultSet.getInt("id");
             String name = resultSet.getString("name");
             int authorId = Integer.parseInt(resultSet.getString("author_id"));
-            String author = authorDao.getNameById(authorId).getName();
+            String author = authorDao.getAuthorById(authorId).getName();
             String year = resultSet.getString("year_of_publishing");
             int genreId = Integer.parseInt(resultSet.getString("genre_id"));
             String genre = genreDao.getNameById(genreId).getName();

@@ -37,7 +37,7 @@ class GenreDaoImplTest {
     void getNameById() {
         Genre genre = dao.getNameById(ID);
 
-        assertThat(genre.getName()).isEqualTo("python");
+        assertThat(genre.getName()).isEqualTo("go");
     }
 
     @Test

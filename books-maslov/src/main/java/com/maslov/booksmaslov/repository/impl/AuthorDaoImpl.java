@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class AuthorDaoImpl implements AuthorDao {
     private final NamedParameterJdbcTemplate jdbc;
 
     @Override
-    public List<Author> getAllNames() {
+    public List<Author> getAllAuthors() {
         return jdbc.query(GET_ALL_AUTHORS, new AuthorDaoImpl.AuthorMapper());
     }
 
@@ -40,7 +41,7 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    public Author getNameById(int id) {
+    public Author getAuthorById(int id) {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("id", id);
         try {
@@ -63,7 +64,9 @@ public class AuthorDaoImpl implements AuthorDao {
     @Override
     public int createAuthor(String name) {
         log.info("Created new Author");
-        int id = getAllNames().size() + 1;
+        List<Author> listAuthors = getAllAuthors();
+        Collections.sort(listAuthors);
+        int id = listAuthors.get(getAllAuthors().size() - 1).getId() + 1;
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("id", id);
         paramMap.put("name", name);
