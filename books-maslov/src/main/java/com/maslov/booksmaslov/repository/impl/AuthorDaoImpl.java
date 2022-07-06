@@ -1,86 +1,103 @@
 package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Author;
+import com.maslov.booksmaslov.exception.NoAuthorException;
 import com.maslov.booksmaslov.repository.AuthorDao;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
-import static com.maslov.booksmaslov.sql.SQLConstants.CREATE_AUTHOR;
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_AUTHORS;
-import static com.maslov.booksmaslov.sql.SQLConstants.GET_AUTHOR_BY_ID;
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_AUTHOR_BY_NAME;
+import static java.util.Objects.isNull;
 
-@Component
+@Repository
 @Slf4j
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class AuthorDaoImpl implements AuthorDao {
 
-    private final NamedParameterJdbcTemplate jdbc;
+    @PersistenceContext
+//    @Autowired
+//    @Qualifier(value = "entityManager")
+    private final EntityManager em;
+
+    public AuthorDaoImpl(EntityManager em) {
+        this.em = em;
+    }
 
     @Override
     public List<Author> getAllAuthors() {
-        return jdbc.query(GET_ALL_AUTHORS, new AuthorDaoImpl.AuthorMapper());
+//        return jdbc.query(GET_ALL_AUTHORS, new AuthorDaoImpl.AuthorMapper());
+        var query = em.createQuery(GET_ALL_AUTHORS, Author.class);
+        return query.getResultList();
     }
 
     @Override
     public Author getByName(String name) {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("name", name);
-        return jdbc.queryForObject(GET_AUTHOR_BY_NAME, paramMap, new AuthorDaoImpl.AuthorMapper());
+        TypedQuery<Author> query = em.createQuery(GET_AUTHOR_BY_NAME, Author.class);
+        query.setParameter("name", name);
+        Author author = checkResult(query, name);
+        return author;
     }
 
     @Override
-    public Author getAuthorById(int id) {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", id);
-        try {
-            return jdbc.queryForObject(GET_AUTHOR_BY_ID, paramMap, new AuthorDaoImpl.AuthorMapper());
-        } catch (EmptyResultDataAccessException e) {
-            log.error("Book with this id is not exist");
-        }
-        return null;
+    public Optional<Author> getAuthorById(long id) {
+//        Map<String, Object> paramMap = new HashMap<>();
+//        paramMap.put("id", id);
+//        try {
+//            return jdbc.queryForObject(GET_AUTHOR_BY_ID, paramMap, new AuthorDaoImpl.AuthorMapper());
+//        } catch (EmptyResultDataAccessException e) {
+//            log.error("Book with this id is not exist");
+//        }
+//        return null;
+        return Optional.ofNullable(em.find(Author.class, id));
     }
 
     @Override
-    public String getAuthorId(String name) {
-        try {
-            return String.valueOf(getByName(name).getId());
-        } catch (EmptyResultDataAccessException e) {
-            return String.valueOf(createAuthor(name));
-        }
-    }
-
-    @Override
-    public int createAuthor(String name) {
+    @Transactional
+    public Author createAuthor(Author author) {
         log.info("Created new Author");
-        List<Author> listAuthors = getAllAuthors();
-        Collections.sort(listAuthors);
-        int id = listAuthors.get(getAllAuthors().size() - 1).getId() + 1;
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", id);
-        paramMap.put("name", name);
-        jdbc.update(CREATE_AUTHOR, paramMap);
-        return id;
+//        em.detach(author);
+//        List<Author> listAuthors = getAllAuthors();
+//        Collections.sort(listAuthors);
+//        int id = listAuthors.get(getAllAuthors().size() - 1).getId() + 1;
+//        Map<String, Object> paramMap = new HashMap<>();
+//        paramMap.put("id", id);
+//        paramMap.put("name", name);
+//        jdbc.update(CREATE_AUTHOR, paramMap);
+        if (isNull(author.getId())) {
+            em.persist(author);
+            return author;
+        }
+        return em.merge(author);
     }
 
 
     private static class AuthorMapper implements RowMapper<Author> {
         @Override
         public Author mapRow(ResultSet resultSet, int i) throws SQLException {
-            int id = resultSet.getInt("id");
+            long id = resultSet.getInt("id");
             String name = resultSet.getString("name");
             return new Author(id, name);
+        }
+    }
+
+    private Author checkResult(TypedQuery<Author> query, String name) {
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            log.warn("Has not author with name: {}", name);
+            throw new NoAuthorException(String.format("Has not author with name %s", name));
         }
     }
 }

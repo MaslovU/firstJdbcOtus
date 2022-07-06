@@ -3,15 +3,14 @@ package com.maslov.booksmaslov.repository;
 import com.maslov.booksmaslov.domain.Author;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AuthorDao {
     List<Author> getAllAuthors();
 
     Author getByName(String name);
 
-    Author getAuthorById(int id);
+    Optional<Author> getAuthorById(long id);
 
-    String getAuthorId(String name);
-
-    int createAuthor(String name);
+    Author createAuthor(Author author);
 }
