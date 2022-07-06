@@ -3,12 +3,10 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                     https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
-    <changeSet id="1" author="Maslov" runOnChange="false">
-        <comment>Initiation</comment>
+    <changeSet id="2" author="Maslov" runOnChange="false">
+        <comment>Added author</comment>
 
         <sqlFile dbms="postgresql" encoding="UTF-8" stripComments="false" splitStatements="false"
-                 path="tables/book.sql" relativeToChangelogFile="true"/>
-        <sqlFile dbms="postgresql" encoding="UTF-8" stripComments="false" splitStatements="false"
-                 path="tables/genre.sql" relativeToChangelogFile="true"/>
+                 path="../1.0.1/tables/author.sql" relativeToChangelogFile="true"/>
     </changeSet>
 </databaseChangeLog>

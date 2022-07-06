@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS author (
-        id int,
+        id serial,
         name text,
         PRIMARY KEY (id)
 )

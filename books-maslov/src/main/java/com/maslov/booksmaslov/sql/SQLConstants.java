@@ -18,8 +18,6 @@ public class SQLConstants {
     public static final String GET_GENRE_BY_NAME = "select * from genre where name =:name";
     public static final String CREATE_GENRE = "insert into genre (id, name) values (:id, :name)";
 
-    public static final String GET_ALL_AUTHORS = "select * from author";
-    public static final String GET_AUTHOR_BY_ID = "select * from author where id =:id";
-    public static final String GET_AUTHOR_BY_NAME = "select * from author where name =:name";
-    public static final String CREATE_AUTHOR = "insert into author (id, name) values (:id, :name)";
+    public static final String GET_ALL_AUTHORS = "select a from Author a";
+    public static final String GET_AUTHOR_BY_NAME = "select a from Author a where a.name =:name";
 }

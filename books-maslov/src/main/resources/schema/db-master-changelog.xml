@@ -8,4 +8,12 @@
     <changeSet id="0" author="Maslov">
         <tagDatabase tag="1.0.0"/>
     </changeSet>
+    <include file="1.0.1/changelog-1.0.1.xml" relativeToChangelogFile="true"/>
+    <changeSet id="1" author="Maslov">
+        <tagDatabase tag="1.0.1"/>
+    </changeSet>
+    <include file="1.0.2/changelog-1.0.2.xml" relativeToChangelogFile="true"/>
+    <changeSet id="2" author="Maslov">
+        <tagDatabase tag="1.0.2"/>
+    </changeSet>
 </databaseChangeLog>
