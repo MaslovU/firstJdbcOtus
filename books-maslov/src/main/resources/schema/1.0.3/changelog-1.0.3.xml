@@ -1,0 +1,14 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    <changeSet id="3" author="Maslov" runOnChange="false">
+        <comment>Chenge data type for ID</comment>
+
+        <sqlFile dbms="postgresql" encoding="UTF-8" stripComments="false" splitStatements="false"
+                 path="../1.0.3/tables/book.sql" relativeToChangelogFile="true"/>
+        <sqlFile dbms="postgresql" encoding="UTF-8" stripComments="false" splitStatements="false"
+                 path="../1.0.3/tables/genre.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+</databaseChangeLog>

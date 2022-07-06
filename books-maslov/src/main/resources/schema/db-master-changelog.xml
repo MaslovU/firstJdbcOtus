@@ -16,4 +16,8 @@
     <changeSet id="2" author="Maslov">
         <tagDatabase tag="1.0.2"/>
     </changeSet>
+    <include file="1.0.3/changelog-1.0.3.xml" relativeToChangelogFile="true"/>
+    <changeSet id="3" author="Maslov">
+        <tagDatabase tag="1.0.3"/>
+    </changeSet>
 </databaseChangeLog>
