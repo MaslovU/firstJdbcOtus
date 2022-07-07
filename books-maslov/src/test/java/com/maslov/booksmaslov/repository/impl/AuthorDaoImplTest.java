@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AuthorDaoImplTest {
 
     public static final long ID = 1L;
-    private static final String JAVA = "java";
+    private static final String LAFORE = "Lafore";
     private static final String DINNER = "dinner";
     private static final Long EXPECTED_ID = 1L;
     @Autowired
@@ -34,37 +33,34 @@ class AuthorDaoImplTest {
 
     @Test
     void getByName() {
-        Author author = dao.getByName(JAVA);
+        Author author = dao.getByName(LAFORE);
 
-        assertThat(author.getName()).isEqualTo(JAVA);
+        assertThat(author.getName()).isEqualTo(LAFORE);
     }
 
     @Test
     void getAuthorById() {
         Author author = dao.getAuthorById(ID).get();
 
-        assertThat(author.getName()).isEqualTo(JAVA);
+        assertThat(author.getName()).isEqualTo(LAFORE);
     }
 
     @Test
     void getAuthorId() {
-        Long id = dao.getByName(JAVA).getId();
+        Long id = dao.getByName(LAFORE).getId();
 
         assertThat(id).isEqualTo(EXPECTED_ID);
     }
 
     @Test
     void getAuthorIdIfAuthorIsNotExists() {
-        Author author = dao.getByName(JAVA);
-
-        assertThat(author.getName()).isEqualTo(JAVA);
+//        Author author = dao.getByName(JAVA);
+//
+//        assertThat(author.getName()).isEqualTo(JAVA);
     }
 
     @Test
     void createAuthor() {
-        List<Author> allAuthors = dao.getAllAuthors();
-        Collections.sort(allAuthors);
-        Long expecredId = allAuthors.get(allAuthors.size() - 1).getId();
         Author author = new Author(null, DINNER);
 
         Author resAuthor = dao.createAuthor(author);
