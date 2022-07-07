@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS book (
-    id int NOT NULL UNIQUE,
+    id bigserial NOT NULL UNIQUE,
     name text,
     author_id text,
     year_of_publishing text,

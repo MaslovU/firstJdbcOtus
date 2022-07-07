@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS author (
-        id serial,
+        id bigserial,
         name text,
         PRIMARY KEY (id)
 )

@@ -1,2 +1,0 @@
-ALTER TABLE book
-    ALTER COLUMN id SET DATA TYPE bigint;
