@@ -15,17 +15,17 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "genre")
-public class Genre implements Comparable<Genre>{
+@Table(name = "year")
+public class Year implements Comparable<Author> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
+    @Column(name = "year", nullable = false, unique = true)
+    private String year;
 
     @Override
-    public int compareTo(Genre o) {
+    public int compareTo(Author o) {
         return this.getId().compareTo(o.getId());
     }
 }
