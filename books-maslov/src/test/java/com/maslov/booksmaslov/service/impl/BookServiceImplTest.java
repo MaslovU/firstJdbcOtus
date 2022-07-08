@@ -2,7 +2,7 @@ package com.maslov.booksmaslov.service.impl;
 
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Genre;
-import com.maslov.booksmaslov.domain.Year;
+import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
@@ -48,7 +48,7 @@ class BookServiceImplTest {
 
     @Test
     void createBook() {
-        Book book = new Book(null, "as", new Genre(), new Year(), new ArrayList<>());
+        Book book = new Book(0, "as", new Genre(), new YearOfPublish(), new ArrayList<>());
 
         when(scanner.getFromUser()).thenReturn("str");
         when(scanner.getFromUser()).thenReturn("str");

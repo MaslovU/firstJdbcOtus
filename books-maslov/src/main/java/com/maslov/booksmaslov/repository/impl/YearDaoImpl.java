@@ -1,7 +1,6 @@
 package com.maslov.booksmaslov.repository.impl;
 
-import com.maslov.booksmaslov.domain.Year;
-import com.maslov.booksmaslov.exception.NoGenreException;
+import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.exception.NoYearException;
 import com.maslov.booksmaslov.repository.YearDao;
 import lombok.extern.slf4j.Slf4j;
@@ -30,26 +29,26 @@ public class YearDaoImpl implements YearDao {
     }
 
     @Override
-    public List<Year> getAllYears() {
-        var query = em.createQuery(GET_ALL_YEARS, Year.class);
+    public List<YearOfPublish> getAllYears() {
+        var query = em.createQuery(GET_ALL_YEARS, YearOfPublish.class);
         return query.getResultList();
     }
 
     @Override
-    public Year getYearByDate(String year) {
-        var query = em.createQuery(GET_YEAR_BY_DATE, Year.class);
+    public YearOfPublish getYearByDate(String year) {
+        var query = em.createQuery(GET_YEAR_BY_DATE, YearOfPublish.class);
         query.setParameter("year", year);
         return checkResult(query, year);
     }
 
     @Override
-    public Optional<Year> getYearById(long id) {
-        return Optional.ofNullable(em.find(Year.class, id));
+    public Optional<YearOfPublish> getYearById(long id) {
+        return Optional.ofNullable(em.find(YearOfPublish.class, id));
     }
 
     @Override
     @Transactional
-    public Year createYear(Year year) {
+    public YearOfPublish createYear(YearOfPublish year) {
         log.info("Created new Year");
         Long yearId = null;
         try {
@@ -64,7 +63,7 @@ public class YearDaoImpl implements YearDao {
         return em.merge(year);
     }
 
-    private Year checkResult(TypedQuery<Year> query, String year) {
+    private YearOfPublish checkResult(TypedQuery<YearOfPublish> query, String year) {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {

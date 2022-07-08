@@ -1,11 +1,7 @@
 package com.maslov.booksmaslov.repository.impl;
 
-import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
-import com.maslov.booksmaslov.domain.Genre;
-import com.maslov.booksmaslov.domain.Year;
 import com.maslov.booksmaslov.exception.NoAuthorException;
-import com.maslov.booksmaslov.model.BookModel;
 import com.maslov.booksmaslov.repository.AuthorDao;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.repository.GenreDao;
@@ -20,8 +16,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,7 +68,6 @@ public class BookDaoImpl implements BookDao {
     @Override
     @Transactional
     public Book createBook(Book book) {
-//        em.detach(BookDaoImpl.class);
         if (isNull(book.getId())) {
             em.persist(book);
             return book;

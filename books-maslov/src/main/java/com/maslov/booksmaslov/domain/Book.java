@@ -21,31 +21,27 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "book")
+@Table(name = "books")
 @Entity
-public class Book implements Comparable<Book> {
+public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @JoinColumn(name = "genre_id")
-    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Genre.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Genre genre;
 
     @JoinColumn(name = "year_id")
-    @ManyToOne(targetEntity = Year.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Year yearOfPublishing;
+    @ManyToOne(targetEntity = YearOfPublish.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    private YearOfPublish yearOfPublishing;
 
-    @ManyToMany(targetEntity = Author.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinTable(name = "book", joinColumns = @JoinColumn(name = "id"),
-        inverseJoinColumns = @JoinColumn(name = "author_id"))
+    @ManyToMany(targetEntity = Author.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(name = "book_authors", joinColumns = {@JoinColumn(name = "book_id")},
+        inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private List<Author> author;
 
-    @Override
-    public int compareTo(Book b) {
-        return this.getId().compareTo(b.getId());
-    }
 }

@@ -3,7 +3,7 @@ package com.maslov.booksmaslov.repository.impl;
 import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Genre;
-import com.maslov.booksmaslov.domain.Year;
+import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.model.BookModel;
 import com.maslov.booksmaslov.repository.BookDao;
 import lombok.val;
@@ -60,7 +60,7 @@ class BookDaoImplTest {
                 .name(book.getName())
                 .authors(String.valueOf(authorsName))
                 .genre(book.getGenre().getName())
-                .year(book.getYearOfPublishing().getYear())
+                .year(book.getYearOfPublishing().getYearOfPublish())
                 .build();
 
         System.out.println(model);
@@ -78,12 +78,12 @@ class BookDaoImplTest {
     @Test
     void createBook() {
 
-        Author author1 = new Author(null, "Labuda");
-        val authors = Collections.singletonList(author1);
-        Year year = new Year(null, "2020");
-        Genre genre = new Genre(null, "labuda");
+        val author = new Author(0, "Lafore");
+        val authors = Collections.singletonList(author);
+        val year = new YearOfPublish(0, "2021");
+        val genre = new Genre(0, "labuda");
 
-        var book = new Book(null, TEST, genre, year, authors);
+        var book = new Book(0, TEST, genre, year, authors);
 
         bookDao.createBook(book);
 

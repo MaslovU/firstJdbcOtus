@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class GenreDaoImplTest {
 
     private static final long ID = 1;
-    private static final String NAME = "studying";
+    private static final String NAME = "study";
     private static final String PYTHON = "python";
 
     @Autowired
@@ -54,7 +54,7 @@ class GenreDaoImplTest {
 
     @Test
     void createGenre() {
-        Genre genre = new Genre(null, PYTHON);
+        Genre genre = new Genre(0, PYTHON);
 
         Genre resGenre = dao.createGenre(genre);
 

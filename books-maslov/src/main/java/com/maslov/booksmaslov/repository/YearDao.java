@@ -1,16 +1,15 @@
 package com.maslov.booksmaslov.repository;
 
-import com.maslov.booksmaslov.domain.Genre;
-import com.maslov.booksmaslov.domain.Year;
+import com.maslov.booksmaslov.domain.YearOfPublish;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface YearDao {
-    List<Year> getAllYears();
-    Year getYearByDate(String date);
+    List<YearOfPublish> getAllYears();
+    YearOfPublish getYearByDate(String date);
 
-    Optional<Year> getYearById(long id);
+    Optional<YearOfPublish> getYearById(long id);
 
-    Year createYear(Year year);
+    YearOfPublish createYear(YearOfPublish year);
 }

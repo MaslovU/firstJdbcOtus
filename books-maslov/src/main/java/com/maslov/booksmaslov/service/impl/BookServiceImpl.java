@@ -3,11 +3,10 @@ package com.maslov.booksmaslov.service.impl;
 import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Genre;
-import com.maslov.booksmaslov.domain.Year;
+import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
-import liquibase.pro.packaged.G;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -57,15 +56,15 @@ public class BookServiceImpl implements BookService {
         System.out.println("Enter name of the book");
         String name = helper.getFromUser();
         System.out.println("Enter name of the author");
-        Author authorAr = new Author(null, helper.getFromUser());
+        Author authorAr = new Author(0, helper.getFromUser());
         val author = Collections.singletonList(authorAr);
         System.out.println("Enter years.sql of publish");
         String yearStr = helper.getFromUser();
-        val year = new Year(null, yearStr);
+        val year = new YearOfPublish(0, yearStr);
         System.out.println("Enter name of the genre");
         String genreStr = helper.getFromUser();
-        val genre = new Genre(null, genreStr);
-        bookDao.createBook(new Book(null, name, genre, year, author));
+        val genre = new Genre(0, genreStr);
+        bookDao.createBook(new Book(0, name, genre, year, author));
     }
 
     @Override

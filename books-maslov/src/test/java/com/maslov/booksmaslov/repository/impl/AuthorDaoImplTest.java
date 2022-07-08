@@ -55,7 +55,7 @@ class AuthorDaoImplTest {
 
     @Test
     void createAuthor() {
-        Author author = new Author(null, DINNER);
+        Author author = new Author(0, DINNER);
 
         Author resAuthor = dao.createAuthor(author);
 

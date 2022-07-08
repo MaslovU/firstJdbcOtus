@@ -15,17 +15,13 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "years")
-public class Year implements Comparable<Author> {
+@Table(name = "year_of_publish")
+public class YearOfPublish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "year", nullable = false, unique = true)
     private String yearOfPublish;
 
-    @Override
-    public int compareTo(Author o) {
-        return this.getId().compareTo(o.getId());
-    }
 }
