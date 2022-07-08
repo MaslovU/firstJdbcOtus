@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class Genre implements Comparable<Genre>{
+public class Genre implements Comparable<Genre> {
     private final Integer id;
     private final String name;
 
