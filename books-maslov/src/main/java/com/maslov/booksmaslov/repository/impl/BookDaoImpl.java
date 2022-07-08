@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.maslov.booksmaslov.sql.SQLConstants.DELETE_BOOK;
+import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_BOOKS;
 import static com.maslov.booksmaslov.sql.SQLConstants.INSERT_INTO_BOOK;
 import static com.maslov.booksmaslov.sql.SQLConstants.SELECT_BOOK_BY_ID;
 import static com.maslov.booksmaslov.sql.SQLConstants.SELECT_BOOK_BY_NAME;
@@ -35,7 +36,7 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> getAllBook() {
-        return namedParamJdbcTempl.query("select * from book", new BookMapper(authorDao, genreDao));
+        return namedParamJdbcTempl.query(GET_ALL_BOOKS, new BookMapper(authorDao, genreDao));
     }
 
     @Override
