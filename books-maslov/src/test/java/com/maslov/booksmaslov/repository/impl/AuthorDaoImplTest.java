@@ -36,14 +36,14 @@ class AuthorDaoImplTest {
     void getByName() {
         Author author = dao.getByName(LAFORE);
 
-        assertThat(author.getAuthor_name()).isEqualTo(LAFORE);
+        assertThat(author.getAuthorName()).isEqualTo(LAFORE);
     }
 
     @Test
     void getAuthorById() {
         Author author = dao.getAuthorById(ID).get();
 
-        assertThat(author.getAuthor_name()).isEqualTo(LAFORE);
+        assertThat(author.getAuthorName()).isEqualTo(LAFORE);
     }
 
     @Test
@@ -59,6 +59,6 @@ class AuthorDaoImplTest {
 
         Author resAuthor = dao.createAuthor(author);
 
-        assertThat(resAuthor.getAuthor_name()).isEqualTo(DINNER);
+        assertThat(resAuthor.getAuthorName()).isEqualTo(DINNER);
     }
 }

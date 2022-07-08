@@ -52,7 +52,7 @@ public class YearDaoImpl implements YearDao {
         log.info("Created new Year");
         Long yearId = null;
         try {
-            yearId = Optional.ofNullable(getYearByDate(year.getYearOfPublish()).getId()).get();
+            yearId = Optional.ofNullable(getYearByDate(year.getDateOfPublish()).getId()).get();
         } catch (NoYearException e) {
             if (isNull(year.getId())) {
                 em.persist(year);

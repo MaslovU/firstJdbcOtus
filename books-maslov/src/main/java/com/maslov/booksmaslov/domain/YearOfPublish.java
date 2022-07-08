@@ -22,6 +22,6 @@ public class YearOfPublish {
     private long id;
 
     @Column(name = "year", nullable = false, unique = true)
-    private String yearOfPublish;
+    private String dateOfPublish;
 
 }

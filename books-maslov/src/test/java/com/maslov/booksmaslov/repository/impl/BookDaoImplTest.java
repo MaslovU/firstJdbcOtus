@@ -49,19 +49,19 @@ class BookDaoImplTest {
     void getBookById() {
         Book book = bookDao.getBookById(ID).get();
 
-        String name = book.getGenre_id().getName();
+        String name = book.getGenreId().getName();
 
         List<Author> authors = book.getAuthor();
         List<String> authorsName = new ArrayList<>();
         for (Author a: authors) {
-            authorsName.add(a.getAuthor_name());
+            authorsName.add(a.getAuthorName());
         }
 
         BookModel model = BookModel.builder()
                 .name(book.getName())
                 .authors(String.valueOf(authorsName))
-                .genre(book.getGenre_id().getName())
-                .year(book.getYear_id().getYearOfPublish())
+                .genre(book.getGenreId().getName())
+                .year(book.getYearId().getDateOfPublish())
                 .build();
 
         System.out.println(model);

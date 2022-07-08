@@ -54,7 +54,7 @@ public class AuthorDaoImpl implements AuthorDao {
         log.info("Created new Author");
         Long authorId = null;
         try {
-            authorId = getByName(author.getAuthor_name()).getId();
+            authorId = getByName(author.getAuthorName()).getId();
         } catch (NoAuthorException e) {
             if (author.getId() == 0) {
                 em.persist(author);
