@@ -12,5 +12,9 @@
                  path="tables/genre.sql" relativeToChangelogFile="true"/>
         <sqlFile dbms="postgresql" encoding="UTF-8" stripComments="false" splitStatements="false"
                  path="tables/author.sql" relativeToChangelogFile="true"/>
+        <sqlFile dbms="postgresql" encoding="UTF-8" stripComments="false" splitStatements="false"
+                 path="tables/book_authors.sql" relativeToChangelogFile="true"/>
+        <sqlFile dbms="postgresql" encoding="UTF-8" stripComments="false" splitStatements="false"
+                 path="tables/years.sql" relativeToChangelogFile="true"/>
     </changeSet>
 </databaseChangeLog>

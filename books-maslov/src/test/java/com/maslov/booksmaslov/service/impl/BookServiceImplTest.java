@@ -1,6 +1,8 @@
 package com.maslov.booksmaslov.service.impl;
 
 import com.maslov.booksmaslov.domain.Book;
+import com.maslov.booksmaslov.domain.Genre;
+import com.maslov.booksmaslov.domain.Year;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
@@ -11,7 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+import java.util.ArrayList;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,6 +48,7 @@ class BookServiceImplTest {
 
     @Test
     void createBook() {
+        Book book = new Book(null, "as", new Genre(), new Year(), new ArrayList<>());
 
         when(scanner.getFromUser()).thenReturn("str");
         when(scanner.getFromUser()).thenReturn("str");
@@ -49,24 +57,24 @@ class BookServiceImplTest {
 
         service.createBook();
 
-        verify(bookDao, Mockito.times(1)).createBook(anyString(), anyString(), anyString(), anyString());
+        verify(bookDao, Mockito.times(1)).createBook(book);
     }
 
     @Test
     void updateBook() {
-        Book book = new Book(1, "str", "str", "str", "str");
+        Book book = new Book(1L, "str", any(), any(), any());
 
         when(scanner.getIdFromUser()).thenReturn(1);
         when(scanner.getFromUser()).thenReturn("str");
         when(scanner.getFromUser()).thenReturn("str");
         when(scanner.getFromUser()).thenReturn("str");
         when(scanner.getFromUser()).thenReturn("str");
-        when(bookDao.updateBook(anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(book);
+        when(bookDao.updateBook(anyInt(), anyString(), any(), any(), any()))
+                .thenReturn(Optional.of(book));
 
         service.updateBook();
 
-        verify(bookDao, Mockito.times(1)).updateBook(anyInt(), anyString(), anyString(), anyString(), anyString());
+        verify(bookDao, Mockito.times(1)).updateBook(anyInt(), anyString(), any(), any(), any());
     }
 
     @Test
@@ -75,7 +83,7 @@ class BookServiceImplTest {
 
         service.delBook();
 
-        verify(bookDao, Mockito.times(1)).deleteBook(anyInt());
+        verify(bookDao, Mockito.times(1)).deleteBook(anyLong());
     }
 
     @Test
@@ -84,6 +92,6 @@ class BookServiceImplTest {
 
         service.delBook();
 
-        verify(bookDao, Mockito.times(0)).deleteBook(anyInt());
+        verify(bookDao, Mockito.times(0)).deleteBook(anyLong());
     }
 }

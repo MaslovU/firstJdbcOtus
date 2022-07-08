@@ -1,13 +1,19 @@
 package com.maslov.booksmaslov.service.impl;
 
+import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
+import com.maslov.booksmaslov.domain.Genre;
+import com.maslov.booksmaslov.domain.Year;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
+import liquibase.pro.packaged.G;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -27,7 +33,7 @@ public class BookServiceImpl implements BookService {
         System.out.println(ENTER_ID);
         int id = helper.getIdFromUser();
         if (id > 0) {
-            Book book = bookDao.getBookById(id);
+            Book book = bookDao.getBookById(id).get();
             if (nonNull(book)) {
                 System.out.println(book);
             } else {
@@ -51,12 +57,15 @@ public class BookServiceImpl implements BookService {
         System.out.println("Enter name of the book");
         String name = helper.getFromUser();
         System.out.println("Enter name of the author");
-        String author = helper.getFromUser();
-        System.out.println("Enter year of publish");
-        String year = helper.getFromUser();
+        Author authorAr = new Author(null, helper.getFromUser());
+        val author = Collections.singletonList(authorAr);
+        System.out.println("Enter years.sql of publish");
+        String yearStr = helper.getFromUser();
+        val year = new Year(null, yearStr);
         System.out.println("Enter name of the genre");
-        String genre = helper.getFromUser();
-        bookDao.createBook(name, author, year, genre);
+        String genreStr = helper.getFromUser();
+        val genre = new Genre(null, genreStr);
+        bookDao.createBook(new Book(null, name, genre, year, author));
     }
 
     @Override
@@ -68,7 +77,7 @@ public class BookServiceImpl implements BookService {
             String name = helper.getFromUser();
             System.out.println("Enter correct name of the author");
             String author = helper.getFromUser();
-            System.out.println("Enter correct year of publish");
+            System.out.println("Enter correct years.sql of publish");
             String year = helper.getFromUser();
             System.out.println("Enter correct name of the genre");
             String genre = helper.getFromUser();
@@ -81,7 +90,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void delBook() {
         System.out.println(ENTER_ID);
-        int id = helper.getIdFromUser();
+        long id = helper.getIdFromUser();
         if (id > 0) {
             bookDao.deleteBook(id);
             log.info("Book deleted successfully");

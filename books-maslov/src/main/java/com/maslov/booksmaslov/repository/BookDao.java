@@ -3,17 +3,18 @@ package com.maslov.booksmaslov.repository;
 import com.maslov.booksmaslov.domain.Book;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BookDao {
     List<Book> getAllBook();
 
-    Book getBookById(int id);
+    Optional<Book> getBookById(long id);
 
     List<Book> getBooksByName(String name);
 
-    void createBook(String name, String author, String year, String genre);
+    Book createBook(Book book);
 
-    void deleteBook(int id);
+    void deleteBook(Long id);
 
-    Book updateBook(int id, String name, String author, String year, String genre);
+    Optional<Book> updateBook(long id, String name, String author, String year, String genre);
 }

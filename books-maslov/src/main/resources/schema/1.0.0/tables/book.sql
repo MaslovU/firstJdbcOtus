@@ -1,10 +1,8 @@
-CREATE TABLE IF NOT EXISTS book (
-    id bigserial NOT NULL UNIQUE,
-    name text,
-    author_id text,
-    year_of_publishing text,
-    genre_id text,
+CREATE TABLE IF NOT EXISTS book(
+    id bigserial,
+    name varchar(255),
+    year_id bigserial REFERENCES years(id),
+    genre_id bigserial REFERENCES genre(id),
     PRIMARY KEY (id)
---     CONSTRAINT uc_genge_id FOREIGN KEY (genre_id),
---     CONSTRAINT uc_author_id FOREIGN KEY (author_id)
 );
+

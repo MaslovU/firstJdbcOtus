@@ -1,116 +1,114 @@
 package com.maslov.booksmaslov.repository.impl;
 
+import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
+import com.maslov.booksmaslov.domain.Genre;
+import com.maslov.booksmaslov.domain.Year;
+import com.maslov.booksmaslov.exception.NoAuthorException;
+import com.maslov.booksmaslov.model.BookModel;
 import com.maslov.booksmaslov.repository.AuthorDao;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.repository.GenreDao;
-import lombok.AllArgsConstructor;
+import com.maslov.booksmaslov.repository.YearDao;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.maslov.booksmaslov.sql.SQLConstants.DELETE_BOOK;
-import static com.maslov.booksmaslov.sql.SQLConstants.INSERT_INTO_BOOK;
-import static com.maslov.booksmaslov.sql.SQLConstants.SELECT_BOOK_BY_ID;
+import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_BOOKS;
 import static com.maslov.booksmaslov.sql.SQLConstants.SELECT_BOOK_BY_NAME;
 import static com.maslov.booksmaslov.sql.SQLConstants.UPDATE_BOOK_BY_ID;
+import static java.util.Objects.isNull;
 
-@Component
+@Repository
 @Slf4j
-@AllArgsConstructor
 public class BookDaoImpl implements BookDao {
-    private final NamedParameterJdbcTemplate namedParamJdbcTempl;
-
+    @PersistenceContext
+    private final EntityManager em;
+    @Autowired
     private final AuthorDao authorDao;
+    @Autowired
+    private final YearDao yearDao;
+    @Autowired
     private final GenreDao genreDao;
 
-    @Override
-    public List<Book> getAllBook() {
-        return namedParamJdbcTempl.query("select * from book", new BookMapper(authorDao, genreDao));
+    public BookDaoImpl(EntityManager em, AuthorDao authorDao, YearDao yearDao, GenreDao genreDao) {
+        this.em = em;
+        this.authorDao = authorDao;
+        this.yearDao = yearDao;
+        this.genreDao = genreDao;
+
     }
 
     @Override
-    public Book getBookById(int id) {
-        try {
-            Map<String, Object> paramMap = new HashMap<>();
-            paramMap.put("id", id);
-            return namedParamJdbcTempl.queryForObject(SELECT_BOOK_BY_ID, paramMap, new BookMapper(authorDao, genreDao));
-        } catch (EmptyResultDataAccessException e) {
-            log.error("Book with this id is not exist");
-        }
-        return null;
+    public List<Book> getAllBook() {
+        var allBook = em.createQuery(GET_ALL_BOOKS, Book.class);
+        return allBook.getResultList();
+    }
+
+    @Override
+    public Optional<Book> getBookById(long id) {
+        return Optional.ofNullable(em.find(Book.class, id));
     }
 
     @Override
     public List<Book> getBooksByName(String name) {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("name", name);
-        return namedParamJdbcTempl.query(SELECT_BOOK_BY_NAME, paramMap, new BookMapper(authorDao, genreDao));
+        TypedQuery<Book> query = em.createQuery(SELECT_BOOK_BY_NAME, Book.class);
+        query.setParameter("name", name);
+        return checkResult(query, name);
     }
 
     @Override
-    public void createBook(String name, String author, String year, String genre) {
-        List<Book> books = getAllBook();
-        Collections.sort(books);
-        int id = books.get(books.size() - 1).getId() + 1;
-        getQuery(id, name, author, year, genre, INSERT_INTO_BOOK);
+    @Transactional
+    public Book createBook(Book book) {
+//        em.detach(BookDaoImpl.class);
+        if (isNull(book.getId())) {
+            em.persist(book);
+            return book;
+        }
+        return em.merge(book);
     }
 
     @Override
-    public Book updateBook(int id, String name, String author, String year, String genre) {
-        getQuery(id, name, author, year, genre, UPDATE_BOOK_BY_ID);
+    public Optional<Book> updateBook(long id, String name, String author, String year, String genre) {
+        List<String> authors = Stream.of(author.split(","))
+                .map(String::trim)
+                .collect(Collectors.toList());
+        Query query = em.createQuery(UPDATE_BOOK_BY_ID);
+        query.setParameter("id", id);
+        query.setParameter("name", name);
+        query.setParameter("genre_id", genre);
+        query.setParameter("year_of_publishing", year);
+        query.setParameter("author_id", authors);
         return getBookById(id);
     }
 
     @Override
-    public void deleteBook(int id) {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", id);
-        namedParamJdbcTempl.update(DELETE_BOOK, paramMap);
+    public void deleteBook(Long id) {
+        Query query = em.createQuery(DELETE_BOOK);
+        query.setParameter("id", id);
+        query.executeUpdate();
     }
 
-    private void getQuery(int id, String name, String author, String yearOfPublishing, String genre, String sql) {
-        String authorId = authorDao.getAuthorId(author);
-        String genreId = genreDao.getAuthorId(genre);
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", id);
-        paramMap.put("name", name);
-        paramMap.put("author_id", authorId);
-        paramMap.put("year_of_publishing", yearOfPublishing);
-        paramMap.put("genre_id", genreId);
-        namedParamJdbcTempl.update(sql, paramMap);
-    }
-
-    private static class BookMapper implements RowMapper<Book> {
-
-        private final AuthorDao authorDao;
-        private final GenreDao genreDao;
-
-        private BookMapper(AuthorDao authorDao, GenreDao genreDao) {
-            this.authorDao = authorDao;
-            this.genreDao = genreDao;
-        }
-
-        @Override
-        public Book mapRow(ResultSet resultSet, int i) throws SQLException {
-
-            int id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            int authorId = Integer.parseInt(resultSet.getString("author_id"));
-            String author = authorDao.getAuthorById(authorId).getName();
-            String year = resultSet.getString("year_of_publishing");
-            int genreId = Integer.parseInt(resultSet.getString("genre_id"));
-            String genre = genreDao.getNameById(genreId).getName();
-            return new Book(id, name, author, year, genre);
+    private List<Book> checkResult(TypedQuery<Book> query, String name) {
+        try {
+            return query.getResultList();
+        } catch (NoResultException e) {
+            log.warn("Has not author with name: {}", name);
+            throw new NoAuthorException(String.format("Has not author with name %s", name));
         }
     }
 }

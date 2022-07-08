@@ -31,18 +31,18 @@ public class Book implements Comparable<Book> {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinTable(name = "author", joinColumns = @JoinColumn(name = "author_id"),
-        inverseJoinColumns = @JoinColumn(name = "book_id"))
-    private List<Author> author;
+    @JoinColumn(name = "genre_id")
+    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Genre genre;
 
-    @JoinColumn(name = "year_of_publishing")
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name = "year_id")
+    @ManyToOne(targetEntity = Year.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Year yearOfPublishing;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinColumn(name = "genre_id")
-    private Genre genre;
+    @ManyToMany(targetEntity = Author.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinTable(name = "book", joinColumns = @JoinColumn(name = "id"),
+        inverseJoinColumns = @JoinColumn(name = "author_id"))
+    private List<Author> author;
 
     @Override
     public int compareTo(Book b) {
