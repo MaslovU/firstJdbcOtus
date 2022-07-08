@@ -56,7 +56,7 @@ public class GenreDaoImpl implements GenreDao {
         try {
             genreId = Optional.ofNullable(getGenreByName(genre.getName()).getId()).get();
         } catch (NoGenreException e) {
-            if (isNull(genre.getId())) {
+            if (genre.getId() == 0) {
                 em.persist(genre);
                 return genre;
             }
