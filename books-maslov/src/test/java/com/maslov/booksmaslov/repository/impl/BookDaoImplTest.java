@@ -26,9 +26,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookDaoImplTest {
     private static final long ID = 1L;
-    private static final String JAVA = "Java";
-    private static final String STUDYING = "studying";
+    private static final String JAVA = "java";
+    private static final String STUDYING = "study";
     private static final String TEST = "Test";
+    private static final int INT_ID = 1;
     private static final int INDEX_OF_BOOK = 0;
     @Autowired
     BookDao bookDao;
@@ -48,19 +49,19 @@ class BookDaoImplTest {
     void getBookById() {
         Book book = bookDao.getBookById(ID).get();
 
-        String name = book.getGenre().getName();
+        String name = book.getGenre_id().getName();
 
         List<Author> authors = book.getAuthor();
         List<String> authorsName = new ArrayList<>();
         for (Author a: authors) {
-            authorsName.add(a.getName());
+            authorsName.add(a.getAuthor_name());
         }
 
         BookModel model = BookModel.builder()
                 .name(book.getName())
                 .authors(String.valueOf(authorsName))
-                .genre(book.getGenre().getName())
-                .year(book.getYearOfPublishing().getYearOfPublish())
+                .genre(book.getGenre_id().getName())
+                .year(book.getYear_id().getYearOfPublish())
                 .build();
 
         System.out.println(model);
@@ -93,7 +94,7 @@ class BookDaoImplTest {
     @Test
     void updateBook() {
 
-        Optional<Book> book = bookDao.updateBook(ID, TEST, TEST, TEST, TEST);
+        Optional<Book> book = bookDao.updateBook(ID, TEST, TEST, ID);
 
         assertThat(book.get().getName()).isEqualTo(TEST);
     }

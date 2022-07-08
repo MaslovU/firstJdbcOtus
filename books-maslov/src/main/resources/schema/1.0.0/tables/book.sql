@@ -20,7 +20,7 @@ CREATE TABLE books(
 
 CREATE TABLE authors(
     id bigserial,
-    name varchar(255),
+    author_name varchar(255),
     PRIMARY KEY (id)
 );
 

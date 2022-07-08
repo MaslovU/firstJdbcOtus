@@ -52,7 +52,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void createBook() {
+    public Book createBook() {
         System.out.println("Enter name of the book");
         String name = helper.getFromUser();
         System.out.println("Enter name of the author");
@@ -64,7 +64,7 @@ public class BookServiceImpl implements BookService {
         System.out.println("Enter name of the genre");
         String genreStr = helper.getFromUser();
         val genre = new Genre(0, genreStr);
-        bookDao.createBook(new Book(0, name, genre, year, author));
+        return bookDao.createBook(new Book(0, name, genre, year, author));
     }
 
     @Override
@@ -76,11 +76,9 @@ public class BookServiceImpl implements BookService {
             String name = helper.getFromUser();
             System.out.println("Enter correct name of the author");
             String author = helper.getFromUser();
-            System.out.println("Enter correct years.sql of publish");
-            String year = helper.getFromUser();
-            System.out.println("Enter correct name of the genre");
-            String genre = helper.getFromUser();
-            log.info(bookDao.updateBook(id, name, author, year, genre).toString());
+            System.out.println("Enter correct author_id of the book");
+            int authorId = helper.getIdFromUser();
+            log.info(bookDao.updateBook(id, name, author, authorId).toString());
         } else {
             System.out.println(GET_ALL);
         }

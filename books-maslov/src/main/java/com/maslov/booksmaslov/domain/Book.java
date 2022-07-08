@@ -33,11 +33,11 @@ public class Book {
 
     @JoinColumn(name = "genre_id")
     @ManyToOne(targetEntity = Genre.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    private Genre genre;
+    private Genre genre_id;
 
     @JoinColumn(name = "year_id")
     @ManyToOne(targetEntity = YearOfPublish.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    private YearOfPublish yearOfPublishing;
+    private YearOfPublish year_id;
 
     @ManyToMany(targetEntity = Author.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "book_authors", joinColumns = {@JoinColumn(name = "book_id")},
