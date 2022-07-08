@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AuthorDaoImplTest {
 
     public static final long ID = 1L;
-    private static final String LAFORE = "Lafore";
+    private static final String LAFORE = "lafore";
     private static final String DINNER = "dinner";
     private static final Long EXPECTED_ID = 1L;
     @Autowired
@@ -36,14 +36,14 @@ class AuthorDaoImplTest {
     void getByName() {
         Author author = dao.getByName(LAFORE);
 
-        assertThat(author.getName()).isEqualTo(LAFORE);
+        assertThat(author.getAuthor_name()).isEqualTo(LAFORE);
     }
 
     @Test
     void getAuthorById() {
         Author author = dao.getAuthorById(ID).get();
 
-        assertThat(author.getName()).isEqualTo(LAFORE);
+        assertThat(author.getAuthor_name()).isEqualTo(LAFORE);
     }
 
     @Test
@@ -59,6 +59,6 @@ class AuthorDaoImplTest {
 
         Author resAuthor = dao.createAuthor(author);
 
-        assertThat(resAuthor.getName()).isEqualTo(DINNER);
+        assertThat(resAuthor.getAuthor_name()).isEqualTo(DINNER);
     }
 }

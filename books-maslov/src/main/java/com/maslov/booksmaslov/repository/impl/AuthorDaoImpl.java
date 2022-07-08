@@ -39,7 +39,7 @@ public class AuthorDaoImpl implements AuthorDao {
     @Override
     public Author getByName(String name) {
         TypedQuery<Author> query = em.createQuery(GET_AUTHOR_BY_NAME, Author.class);
-        query.setParameter("name", name);
+        query.setParameter("author_name", name);
         return checkResult(query, name);
     }
 
@@ -54,9 +54,9 @@ public class AuthorDaoImpl implements AuthorDao {
         log.info("Created new Author");
         Long authorId = null;
         try {
-            authorId = Optional.ofNullable(getByName(author.getName()).getId()).get();
+            authorId = getByName(author.getAuthor_name()).getId();
         } catch (NoAuthorException e) {
-            if (isNull(author.getId())) {
+            if (author.getId() == 0) {
                 em.persist(author);
                 return author;
             }
