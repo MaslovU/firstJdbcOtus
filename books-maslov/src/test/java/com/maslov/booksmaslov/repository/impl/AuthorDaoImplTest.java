@@ -2,7 +2,6 @@ package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.repository.AuthorDao;
-import liquibase.pro.packaged.L;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -34,9 +33,9 @@ class AuthorDaoImplTest {
 
     @Test
     void getByName() {
-        Author author = dao.getByName(LAFORE);
+        List<Author> author = dao.getByName(LAFORE);
 
-        assertThat(author.getAuthorName()).isEqualTo(LAFORE);
+        assertThat(author.get(0).getAuthorName()).isEqualTo(LAFORE);
     }
 
     @Test
@@ -48,7 +47,7 @@ class AuthorDaoImplTest {
 
     @Test
     void getAuthorId() {
-        Long id = dao.getByName(LAFORE).getId();
+        Long id = dao.getByName(LAFORE).get(0).getId();
 
         assertThat(id).isEqualTo(EXPECTED_ID);
     }

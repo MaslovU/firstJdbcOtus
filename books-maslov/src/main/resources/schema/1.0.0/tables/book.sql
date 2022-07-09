@@ -13,17 +13,21 @@ CREATE TABLE year_of_publish (
 CREATE TABLE books(
     id bigserial,
     name varchar(255),
-    year_id bigint REFERENCES year_of_publish(id) on delete cascade ,
-    genre_id bigint REFERENCES genres(id) on delete cascade ,
+    year_id bigint REFERENCES year_of_publish(id) on delete cascade,
+    genre_id bigint REFERENCES genres(id) on delete cascade,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE comments (
-    id bigserial,
-    comment_for_book varchar(255),
-    book_id bigint REFERENCES books(id) on delete cascade,
-    PRIMARY KEY (id)
+CREATE TABLE comments(
+    comment_id bigserial,
+    book_id bigint,
+    comment_book varchar(255),
+    PRIMARY KEY (comment_id)
 );
+
+alter table comments
+    add constraint FK_Comment_BookId
+        foreign key (book_id) references books (id) on delete cascade;
 
 CREATE TABLE authors(
     id bigserial,

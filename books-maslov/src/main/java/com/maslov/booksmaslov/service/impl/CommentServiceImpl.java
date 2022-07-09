@@ -13,13 +13,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 @Slf4j
 public class CommentServiceImpl implements CommentService {
 
     private final ScannerHelper helper;
     private final BookDao bookDao;
     private final CommentDao commentDao;
+
+    public CommentServiceImpl(ScannerHelper helper, BookDao bookDao, CommentDao commentDao) {
+        this.helper = helper;
+        this.bookDao = bookDao;
+        this.commentDao = commentDao;
+    }
 
     @Override
     public List<Comment> getAllCommentsForBook() {

@@ -2,6 +2,7 @@ package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
+import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.model.BookModel;
@@ -83,8 +84,11 @@ class BookDaoImplTest {
         val authors = Collections.singletonList(author);
         val year = new YearOfPublish(0, "2021");
         val genre = new Genre(0, "labuda");
+        val comment = new Comment(0, "Third");
+        val comment2 = new Comment(0, "Five");
+        var comments = List.of(comment, comment2);
 
-        var book = new Book(0, TEST, genre, year, authors);
+        var book = new Book(0, TEST, genre, year, authors, comments);
 
         bookDao.createBook(book);
 

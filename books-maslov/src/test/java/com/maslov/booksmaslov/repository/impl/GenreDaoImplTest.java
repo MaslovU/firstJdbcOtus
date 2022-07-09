@@ -13,7 +13,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(GenreDaoImpl.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class GenreDaoImplTest {
 
@@ -33,7 +32,7 @@ class GenreDaoImplTest {
 
     @Test
     void getByName() {
-        Genre genre = dao.getGenreByName(NAME);
+        Genre genre = dao.getGenreByName(NAME).get(0);
 
         assertThat(genre.getName()).isEqualTo(NAME);
     }
@@ -47,7 +46,7 @@ class GenreDaoImplTest {
 
     @Test
     void getGenreId() {
-        Long id = dao.getGenreByName(NAME).getId();
+        Long id = dao.getGenreByName(NAME).get(0).getId();
 
         assertThat(id).isEqualTo(ID);
     }

@@ -2,13 +2,9 @@ package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.exception.NoAuthorException;
-import com.maslov.booksmaslov.repository.AuthorDao;
 import com.maslov.booksmaslov.repository.BookDao;
-import com.maslov.booksmaslov.repository.GenreDao;
-import com.maslov.booksmaslov.repository.YearDao;
-import liquibase.pro.packaged.Q;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,27 +23,13 @@ import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_BOOKS;
 import static com.maslov.booksmaslov.sql.SQLConstants.SELECT_BOOK_BY_NAME;
 import static com.maslov.booksmaslov.sql.SQLConstants.UPDATE_AUTHORS_BY_ID;
 import static com.maslov.booksmaslov.sql.SQLConstants.UPDATE_BOOK_BY_ID;
-import static java.util.Objects.isNull;
 
 @Repository
+@RequiredArgsConstructor
 @Slf4j
 public class BookDaoImpl implements BookDao {
     @PersistenceContext
     private final EntityManager em;
-    @Autowired
-    private final AuthorDao authorDao;
-    @Autowired
-    private final YearDao yearDao;
-    @Autowired
-    private final GenreDao genreDao;
-
-    public BookDaoImpl(EntityManager em, AuthorDao authorDao, YearDao yearDao, GenreDao genreDao) {
-        this.em = em;
-        this.authorDao = authorDao;
-        this.yearDao = yearDao;
-        this.genreDao = genreDao;
-
-    }
 
     @Override
     public List<Book> getAllBook() {

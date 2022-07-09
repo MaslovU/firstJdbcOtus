@@ -2,9 +2,12 @@ package com.maslov.booksmaslov.service.impl;
 
 import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
+import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.repository.BookDao;
+import com.maslov.booksmaslov.repository.impl.BookDaoImpl;
+import com.maslov.booksmaslov.repository.impl.GenreDaoImpl;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import org.junit.jupiter.api.Test;
@@ -12,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
@@ -27,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@Import(BookDaoImpl.class)
 @SpringJUnitConfig(BookServiceImpl.class)
 class BookServiceImplTest {
 
@@ -53,7 +58,10 @@ class BookServiceImplTest {
     void createBook() {
         List<Author> authors = new ArrayList<>();
         authors.add(new Author(0, "Gorky"));
-        Book book = new Book(0, "Gorky", new Genre(0, "Gorky"), new YearOfPublish(0, "Gorky"), authors);
+        List<Comment> comments = new ArrayList<>();
+        comments.add(new Comment(0, "Gorky"));
+        Book book = new Book(0, "Gorky", new Genre(0, "Gorky"),
+                new YearOfPublish(0, "Gorky"), authors, comments);
 
         when(scanner.getFromUser()).thenReturn("any()");
         when(scanner.getFromUser()).thenReturn("ex");
@@ -67,11 +75,12 @@ class BookServiceImplTest {
 
     @Test
     void updateBook() {
-        Book book = new Book(0, "as", new Genre(), new YearOfPublish(), new ArrayList<>());
+        Book book = new Book(0, "as", new Genre(), new YearOfPublish(), new ArrayList<>(), new ArrayList<>());
 
         when(scanner.getIdFromUser()).thenReturn(1);
         when(scanner.getFromUser()).thenReturn("str");
         when(scanner.getFromUser()).thenReturn("str");
+        when(scanner.getIdFromUser()).thenReturn(1);
         when(scanner.getIdFromUser()).thenReturn(1);
         when(bookDao.updateBook(anyInt(), anyString(), any(), anyInt()))
                 .thenReturn(Optional.of(book));

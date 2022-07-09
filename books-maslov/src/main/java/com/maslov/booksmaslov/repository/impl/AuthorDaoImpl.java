@@ -16,8 +16,6 @@ import java.util.Optional;
 
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_AUTHORS;
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_AUTHOR_BY_NAME;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Repository
 @Slf4j
@@ -37,7 +35,7 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    public Author getByName(String name) {
+    public List<Author> getByName(String name) {
         TypedQuery<Author> query = em.createQuery(GET_AUTHOR_BY_NAME, Author.class);
         query.setParameter("author_name", name);
         return checkResult(query, name);
@@ -54,8 +52,8 @@ public class AuthorDaoImpl implements AuthorDao {
         log.info("Created new Author");
         Long authorId = null;
         try {
-            authorId = getByName(author.getAuthorName()).getId();
-        } catch (NoAuthorException e) {
+            authorId = getByName(author.getAuthorName()).get(0).getId();
+        } catch (NoAuthorException | IndexOutOfBoundsException e) {
             if (author.getId() == 0) {
                 em.persist(author);
                 return author;
@@ -65,9 +63,9 @@ public class AuthorDaoImpl implements AuthorDao {
         return em.merge(author);
     }
 
-    private Author checkResult(TypedQuery<Author> query, String name) {
+    private List<Author> checkResult(TypedQuery<Author> query, String name) {
         try {
-            return query.getSingleResult();
+            return query.getResultList();
         } catch (NoResultException e) {
             log.warn("Has not author with name: {}", name);
             throw new NoAuthorException(String.format("Has not author with name %s", name));

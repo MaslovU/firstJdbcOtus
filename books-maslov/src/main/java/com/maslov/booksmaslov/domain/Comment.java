@@ -17,10 +17,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "comments")
 public class Comment {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "comment_id")
     private long id;
-    @Column(name = "comment_for_book", nullable = false, unique = true)
+
+    @Column(name = "comment_book", nullable = false, unique = true)
     private String commentForBook;
 }

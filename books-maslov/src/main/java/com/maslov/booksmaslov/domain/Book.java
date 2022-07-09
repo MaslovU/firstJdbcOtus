@@ -48,5 +48,4 @@ public class Book {
     @OneToMany(targetEntity = Comment.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "comment_id")
     private List<Comment> listOfComment;
-
 }

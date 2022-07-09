@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface AuthorDao {
     List<Author> getAllAuthors();
 
-    Author getByName(String name);
+    List<Author> getByName(String name);
 
     Optional<Author> getAuthorById(long id);
 

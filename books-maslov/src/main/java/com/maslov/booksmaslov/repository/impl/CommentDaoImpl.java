@@ -2,6 +2,7 @@ package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.exception.NoCommentException;
+import com.maslov.booksmaslov.exception.NoGenreException;
 import com.maslov.booksmaslov.repository.CommentDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -9,6 +10,10 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+
+import java.util.Optional;
+
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Repository
@@ -23,18 +28,17 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public Comment getCommentById(long id) {
-        try {
-            return em.find(Comment.class, id);
-        } catch (NoResultException e) {
+        if(isNull(em.find(Comment.class, id))) {
             throw new NoCommentException("No comment for this ID");
         }
+        return em.find(Comment.class, id);
     }
 
     @Override
     public Comment createComment(String comment) {
         Comment comm = new Comment(0, comment);
         log.info("Created new Comment");
-        em.persist(comment);
+        em.persist(comm);
         return comm;
     }
 
@@ -45,6 +49,6 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public void deleteComment(Comment comment) {
-        em.remove(comment);
+        em.remove(em.contains(comment) ? comment : em.merge(comment));
     }
 }

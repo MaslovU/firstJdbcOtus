@@ -16,7 +16,6 @@ import java.util.Optional;
 
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_GENRES;
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_GENRE_BY_NAME;
-import static java.util.Objects.isNull;
 
 
 @Repository
@@ -42,7 +41,7 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public Genre getGenreByName(String name) {
+    public List<Genre> getGenreByName(String name) {
         var query = em.createQuery(GET_GENRE_BY_NAME, Genre.class);
         query.setParameter("name", name);
         return checkResult(query, name);
@@ -54,8 +53,8 @@ public class GenreDaoImpl implements GenreDao {
         log.info("Created new Genre");
         Long genreId = null;
         try {
-            genreId = Optional.ofNullable(getGenreByName(genre.getName()).getId()).get();
-        } catch (NoGenreException e) {
+            genreId = Optional.ofNullable(getGenreByName(genre.getName()).get(0).getId()).get();
+        } catch (NoGenreException | IndexOutOfBoundsException e) {
             if (genre.getId() == 0) {
                 em.persist(genre);
                 return genre;
@@ -65,9 +64,9 @@ public class GenreDaoImpl implements GenreDao {
         return em.merge(genre);
     }
 
-    private Genre checkResult(TypedQuery<Genre> query, String name) {
+    private List<Genre> checkResult(TypedQuery<Genre> query, String name) {
         try {
-            return query.getSingleResult();
+            return query.getResultList();
         } catch (NoResultException e) {
             log.warn("Has not author with name: {}", name);
             throw new NoGenreException(String.format("Has not genre with name %s", name));
