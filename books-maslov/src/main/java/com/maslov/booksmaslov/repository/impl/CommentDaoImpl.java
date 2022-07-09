@@ -1,11 +1,13 @@
 package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Comment;
+import com.maslov.booksmaslov.exception.NoCommentException;
 import com.maslov.booksmaslov.repository.CommentDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 @Slf4j
@@ -20,8 +22,12 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
-    public Comment getCommentById(int id) {
-        return em.find(Comment.class, id);
+    public Comment getCommentById(long id) {
+        try {
+            return em.find(Comment.class, id);
+        } catch (NoResultException e) {
+            throw new NoCommentException("No comment for this ID");
+        }
     }
 
     @Override

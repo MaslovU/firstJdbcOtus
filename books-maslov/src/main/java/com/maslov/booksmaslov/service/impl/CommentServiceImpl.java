@@ -6,7 +6,6 @@ import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.repository.CommentDao;
 import com.maslov.booksmaslov.service.CommentService;
 import com.maslov.booksmaslov.service.ScannerHelper;
-import liquibase.pro.packaged.C;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -72,7 +71,7 @@ public class CommentServiceImpl implements CommentService {
 
     private int getCommentId(int idForBook) {
         System.out.println("Choose and enter id of comment");
-        for (Comment c: bookDao.getBookById(idForBook).get().getListOfComment()) {
+        for (Comment c : bookDao.getBookById(idForBook).get().getListOfComment()) {
             System.out.println(c);
         }
         return helper.getIdFromUser();
