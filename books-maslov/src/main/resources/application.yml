@@ -5,11 +5,16 @@ spring:
   shell:
     interactive:
       enabled: true
+  sql:
+    init:
+      mode: always
 
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+
+    show-sql: true
 
     properties:
       hibernate:
