@@ -2,6 +2,7 @@ package com.maslov.booksmaslov.service.impl;
 
 import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
+import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.repository.BookDao;
@@ -18,14 +19,18 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 
 @Service
-@AllArgsConstructor
 @Slf4j
 public class BookServiceImpl implements BookService {
     private final String ENTER_ID = "Enter ID for book or 0 is your dont now ID";
     private final String GET_ALL = "Enter command 'getall' for search your book in list";
 
-    private BookDao bookDao;
-    private ScannerHelper helper;
+    private final BookDao bookDao;
+    private final ScannerHelper helper;
+
+    public BookServiceImpl(BookDao bookDao, ScannerHelper helper) {
+        this.bookDao = bookDao;
+        this.helper = helper;
+    }
 
     @Override
     public void getBook() {
@@ -64,7 +69,10 @@ public class BookServiceImpl implements BookService {
         System.out.println("Enter name of the genre");
         String genreStr = helper.getFromUser();
         val genre = new Genre(0, genreStr);
-        return bookDao.createBook(new Book(0, name, genre, year, author));
+        System.out.println("You can add comment to this book");
+        val comment = new Comment(0, helper.getFromUser());
+        var comments = Collections.singletonList(comment);
+        return bookDao.createBook(new Book(0, name, genre, year, author, comments));
     }
 
     @Override
