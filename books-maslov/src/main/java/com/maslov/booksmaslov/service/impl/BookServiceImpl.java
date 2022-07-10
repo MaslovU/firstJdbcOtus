@@ -14,6 +14,7 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -71,7 +72,8 @@ public class BookServiceImpl implements BookService {
         val genre = new Genre(0, genreStr);
         System.out.println("You can add comment to this book");
         val comment = new Comment(0, helper.getFromUser());
-        var comments = Collections.singletonList(comment);
+        var comments = new HashSet<Comment>();
+        comments.add(comment);
         return bookDao.createBook(new Book(0, name, genre, year, author, comments));
     }
 

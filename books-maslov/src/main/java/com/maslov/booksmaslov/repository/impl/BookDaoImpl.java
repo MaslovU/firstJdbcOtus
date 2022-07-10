@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -33,7 +34,11 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public List<Book> getAllBook() {
+        EntityGraph<?> entityGraph = em.getEntityGraph("author-entity-graph");
         var allBook = em.createQuery(GET_ALL_BOOKS, Book.class);
+
+        allBook.setHint("javax.persistence.fetchgraph", entityGraph);
+
         return allBook.getResultList();
     }
 

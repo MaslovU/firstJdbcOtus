@@ -3,6 +3,8 @@ package com.maslov.booksmaslov.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,15 +17,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "books")
 @Entity
+@NamedEntityGraph(name = "author-entity-graph", attributeNodes = {@NamedAttributeNode("author")})
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +51,8 @@ public class Book {
         inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private List<Author> author;
 
+    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(targetEntity = Comment.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "comment_id")
-    private List<Comment> listOfComment;
+    private Set<Comment> listOfComment;
 }
