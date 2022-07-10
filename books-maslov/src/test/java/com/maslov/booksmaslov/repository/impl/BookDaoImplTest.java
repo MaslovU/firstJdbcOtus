@@ -18,9 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({BookDaoImpl.class, GenreDaoImpl.class, AuthorDaoImpl.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookDaoImplTest {
-    private static final int ID = 3;
-    private static final String KOTLIN = "kotlin";
-    private static final int EXPECTED_ID = 5;
+    private static final int ID = 1;
+    private static final String GO = "go";
+    private static final int EXPECTED_ID = 2;
     private static final String TEST = "Test";
     private static final int INDEX_OF_BOOK = 0;
     @Autowired
@@ -44,12 +44,12 @@ class BookDaoImplTest {
     void getBookById() {
         Book book = bookDao.getBookById(EXPECTED_ID);
 
-        assertThat(book.getName()).isEqualTo(KOTLIN);
+        assertThat(book.getName()).isEqualTo(GO);
     }
 
     @Test
     void getBooksByName() {
-        List<Book> books = bookDao.getBooksByName(KOTLIN);
+        List<Book> books = bookDao.getBooksByName(GO);
 
         assertThat(books.get(0).getId()).isEqualTo(EXPECTED_ID);
     }
@@ -57,10 +57,7 @@ class BookDaoImplTest {
     @Test
     void createBook() {
         String name = TEST;
-        String author = TEST;
-        String year = TEST;
-        String genre = TEST;
-        bookDao.createBook(name, author, year, genre);
+        bookDao.createBook(name, TEST, TEST, TEST);
 
         assertThat(bookDao.getBooksByName(name).get(INDEX_OF_BOOK).getName()).isEqualTo(name);
     }

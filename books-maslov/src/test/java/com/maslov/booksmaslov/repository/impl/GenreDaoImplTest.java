@@ -17,9 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class GenreDaoImplTest {
 
-    private static final int ID = 3;
-    private static final String ID_PYTHON = "5";
-    private static final String NAME = "go";
+    private static final int ID = 1;
+    private static final String ID_PYTHON = "2";
+    private static final String NAME = "study";
     private static final String PYTHON = "python";
     private static final String JS = "JS";
 
@@ -37,7 +37,7 @@ class GenreDaoImplTest {
     void getNameById() {
         Genre genre = dao.getNameById(ID);
 
-        assertThat(genre.getName()).isEqualTo("go");
+        assertThat(genre.getName()).isEqualTo("study");
     }
 
     @Test

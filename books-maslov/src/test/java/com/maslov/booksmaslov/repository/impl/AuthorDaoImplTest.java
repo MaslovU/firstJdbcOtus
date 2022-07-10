@@ -19,11 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class AuthorDaoImplTest {
 
-    public static final String NAME = "kozmina";
+    public static final String NAME = "lafore";
     public static final int ID = 1;
     private static final String JAVA = "java";
     private static final String DINNER = "dinner";
-    private static final String EXPECTED_ID = "1";
+    private static final String EXPECTED_ID = "3";
     @Autowired
     private AuthorDao dao;
 
@@ -45,7 +45,7 @@ class AuthorDaoImplTest {
     void getAuthorById() {
         Author author = dao.getAuthorById(ID);
 
-        assertThat(author.getName()).isEqualTo(JAVA);
+        assertThat(author.getName()).isEqualTo(NAME);
     }
 
     @Test
