@@ -38,10 +38,12 @@ public class Book {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @Fetch(FetchMode.SUBSELECT)
     @ManyToOne(targetEntity = Genre.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "genre_id")
     private Genre genreId;
 
+    @Fetch(FetchMode.SUBSELECT)
     @ManyToOne(targetEntity = YearOfPublish.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "year_id")
     private YearOfPublish yearId;
