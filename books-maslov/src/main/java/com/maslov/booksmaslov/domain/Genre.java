@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @Table(name = "genres")
 public class Genre {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     @Column(name = "name", nullable = false, unique = true)
