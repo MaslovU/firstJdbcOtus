@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface YearDao {
     List<YearOfPublish> getAllYears();
+
     YearOfPublish getYearByDate(String date);
 
     Optional<YearOfPublish> getYearById(long id);

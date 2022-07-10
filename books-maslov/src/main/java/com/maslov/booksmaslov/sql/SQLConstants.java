@@ -8,7 +8,6 @@ public class SQLConstants {
     public static final String SELECT_BOOK_BY_NAME = "select b from Book b where b.name =:name";
     public static final String UPDATE_BOOK_BY_ID = "update Book b set b.name=:name where b.id=:id";
     public static final String DELETE_BOOK = "delete from Book b where b.id=:id";
-
     public static final String GET_ALL_GENRES = "select g from Genre g";
     public static final String GET_GENRE_BY_NAME = "select g from Genre g where g.name =:name";
 

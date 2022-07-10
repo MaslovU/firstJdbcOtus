@@ -48,7 +48,7 @@ public class Book {
 
     @ManyToMany(targetEntity = Author.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "book_authors", joinColumns = {@JoinColumn(name = "book_id")},
-        inverseJoinColumns = {@JoinColumn(name = "author_id")})
+            inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private List<Author> author;
 
     @Fetch(FetchMode.SUBSELECT)

@@ -8,6 +8,7 @@ import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.model.BookModel;
 import com.maslov.booksmaslov.repository.BookDao;
 import lombok.val;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,6 +34,8 @@ class BookDaoImplTest {
     private static final String TEST = "Test";
     private static final int INT_ID = 1;
     private static final int INDEX_OF_BOOK = 0;
+
+    private static final int EXPECTED_COUNT = 1;
     @Autowired
     BookDao bookDao;
 
@@ -40,10 +44,13 @@ class BookDaoImplTest {
 
     @Test
     void getAllBook() {
+        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory().unwrap(SessionFactory.class);
+        sessionFactory.getStatistics().setStatisticsEnabled(true);
 
         List<Book> list = bookDao.getAllBook();
 
         assertThat(list.size()).isNotZero();
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_COUNT);
     }
 
     @Test
@@ -86,7 +93,7 @@ class BookDaoImplTest {
         val genre = new Genre(0, "labuda");
         val comment = new Comment(0, "Third");
         val comment2 = new Comment(0, "Five");
-        var comments = List.of(comment, comment2);
+        var comments = Set.of(comment, comment2);
 
         var book = new Book(0, TEST, genre, year, authors, comments);
 

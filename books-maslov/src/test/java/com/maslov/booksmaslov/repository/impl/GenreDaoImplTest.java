@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import({GenreDaoImpl.class})
 class GenreDaoImplTest {
 
     private static final long ID = 1;

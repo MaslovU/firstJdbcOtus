@@ -6,11 +6,11 @@ import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.repository.CommentDao;
 import com.maslov.booksmaslov.service.CommentService;
 import com.maslov.booksmaslov.service.ScannerHelper;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -27,24 +27,24 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getAllCommentsForBook() {
+    public Set<Comment> getAllCommentsForBook() {
         int idOfBook = getIdForBook();
         return bookDao.getBookById(idOfBook).get().getListOfComment();
     }
 
     @Override
-    public List<Comment> createComment() {
+    public Set<Comment> createComment() {
         int idForBook = getIdForBook();
         System.out.println("Enter your comment");
         String comm = helper.getFromUser();
         Comment addedComment = commentDao.createComment(comm);
-        List<Comment> commentList = bookDao.getBookById(idForBook).get().getListOfComment();
+        Set<Comment> commentList = bookDao.getBookById(idForBook).get().getListOfComment();
         commentList.add(addedComment);
         return commentList;
     }
 
     @Override
-    public List<Comment> updateComment() {
+    public Set<Comment> updateComment() {
         int idForBook = getIdForBook();
         int idComment = getCommentId(idForBook);
         System.out.println("Enter correct comment");
@@ -54,12 +54,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> deleteComment() {
+    public Set<Comment> deleteComment() {
         int idForBook = getIdForBook();
         int idForComment = getCommentId(idForBook);
         Comment comment = commentDao.getCommentById(idForComment);
         commentDao.deleteComment(comment);
-        List<Comment> commentList = bookDao.getBookById(idForBook).get().getListOfComment();
+        Set<Comment> commentList = bookDao.getBookById(idForBook).get().getListOfComment();
         return commentList;
     }
 

@@ -7,7 +7,6 @@ import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.repository.impl.BookDaoImpl;
-import com.maslov.booksmaslov.repository.impl.GenreDaoImpl;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import org.junit.jupiter.api.Test;
@@ -19,12 +18,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -58,7 +58,7 @@ class BookServiceImplTest {
     void createBook() {
         List<Author> authors = new ArrayList<>();
         authors.add(new Author(0, "Gorky"));
-        List<Comment> comments = new ArrayList<>();
+        Set<Comment> comments = new HashSet<Comment>();
         comments.add(new Comment(0, "Gorky"));
         Book book = new Book(0, "Gorky", new Genre(0, "Gorky"),
                 new YearOfPublish(0, "Gorky"), authors, comments);
@@ -75,7 +75,7 @@ class BookServiceImplTest {
 
     @Test
     void updateBook() {
-        Book book = new Book(0, "as", new Genre(), new YearOfPublish(), new ArrayList<>(), new ArrayList<>());
+        Book book = new Book(0, "as", new Genre(), new YearOfPublish(), new ArrayList<>(), new HashSet<>());
 
         when(scanner.getIdFromUser()).thenReturn(1);
         when(scanner.getFromUser()).thenReturn("str");
