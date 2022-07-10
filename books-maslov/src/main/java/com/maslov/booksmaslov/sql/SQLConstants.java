@@ -9,6 +9,7 @@ public class SQLConstants {
             " from book b\n" +
             " join author a on cast(b.author_id as int) = a.id\n" +
             " join genre g on cast(b.genre_id as int) = g.id";
+
     public static final String SELECT_BOOK_BY_ID = GET_ALL_BOOKS + " where b.id=:id";
 
     public static final String SELECT_BOOK_BY_NAME = GET_ALL_BOOKS + " where b.name=:name";
