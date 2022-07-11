@@ -6,7 +6,6 @@ import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
-import com.maslov.booksmaslov.repository.BookRepo;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -94,7 +93,7 @@ public class BookServiceImpl implements BookService {
         System.out.println("Enter name of the author");
         Author authorAr = new Author(0, helper.getFromUser());
         val author = Collections.singletonList(authorAr);
-        System.out.println("Enter years.sql of publish");
+        System.out.println("Enter years of publish");
         String yearStr = helper.getFromUser();
         val year = new YearOfPublish(0, yearStr);
         System.out.println("Enter name of the genre");
@@ -102,7 +101,7 @@ public class BookServiceImpl implements BookService {
         val genre = new Genre(0, genreStr);
         System.out.println("You can add comment to this book");
         val comment = new Comment(0, helper.getFromUser());
-        var comments = new HashSet<Comment>();
+        List<Comment> comments = new ArrayList<>();
         comments.add(comment);
         return new Book(0, name, genre, year, author, comments);
     }
