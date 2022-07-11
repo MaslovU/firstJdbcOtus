@@ -22,6 +22,6 @@ public class Author {
     private long id;
 
     @Column(name = "author_name", nullable = false, unique = true)
-    private String authorName;
+    private String name;
 
 }
