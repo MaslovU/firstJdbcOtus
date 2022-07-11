@@ -1,4 +1,4 @@
-package com.maslov.booksmaslov.repository.impl;
+package com.maslov.booksmaslov.dao;
 
 import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
@@ -6,7 +6,6 @@ import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.model.BookModel;
-import com.maslov.booksmaslov.repository.BookDao;
 import lombok.val;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
@@ -18,24 +17,25 @@ import org.springframework.context.annotation.Import;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import({BookDaoImpl.class, AuthorDaoImpl.class, YearDaoImpl.class, GenreDaoImpl.class})
+@Import({BookDao.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class BookDaoImplTest {
+class BookDaoTest {
     private static final long ID = 1L;
     private static final String JAVA = "java";
     private static final String STUDYING = "study";
     private static final String TEST = "Test";
-    private static final int INT_ID = 1;
+    private static final String AUTHOR = "author";
     private static final int INDEX_OF_BOOK = 0;
 
-    private static final int EXPECTED_COUNT = 1;
+    private static final int EXPECTED_COUNT = 6;
+    public static final long ID_FOR_DELETE = 2L;
     @Autowired
     BookDao bookDao;
 
@@ -62,7 +62,7 @@ class BookDaoImplTest {
         List<Author> authors = book.getAuthor();
         List<String> authorsName = new ArrayList<>();
         for (Author a: authors) {
-            authorsName.add(a.getAuthorName());
+            authorsName.add(a.getName());
         }
 
         BookModel model = BookModel.builder()
@@ -104,16 +104,30 @@ class BookDaoImplTest {
 
     @Test
     void updateBook() {
+        List<Author> authors = new ArrayList<>();
+        authors.add(new Author(0, AUTHOR));
+        Genre genre = new Genre(0, "test");
+        YearOfPublish year = new YearOfPublish(0, "2015");
+        Set<Comment> comments = new HashSet<>();
+        comments.add(new Comment());
+        Book book = Book.builder()
+                .name(TEST)
+                .genreId(genre)
+                .yearId( year)
+                .author( authors)
+                .listOfComment(comments)
+                .build();
+        Book bookFromDB = bookDao.getBookById(1).get();
 
-        Optional<Book> book = bookDao.updateBook(ID, TEST, TEST, ID);
+        Book updatedBook = bookDao.updateBook(book, bookFromDB);
 
-        assertThat(book.get().getName()).isEqualTo(TEST);
+        assertThat(updatedBook.getName()).isEqualTo(TEST);
     }
 
     @Test
     void deleteBook() {
         List<Book> booksBefore = bookDao.getAllBook();
-        bookDao.deleteBook(ID);
+        bookDao.deleteBook(ID_FOR_DELETE);
         List<Book> booksAfter = bookDao.getAllBook();
 
         assertThat(booksAfter).hasSize(booksBefore.size() - 1);
