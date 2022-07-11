@@ -19,10 +19,10 @@ CREATE TABLE books(
 );
 
 CREATE TABLE comments(
-    comment_id bigserial,
-    book_id bigint,
+    id bigserial,
+    book_id bigint REFERENCES books(id) on delete cascade,
     comment_book varchar(255),
-    PRIMARY KEY (comment_id)
+    PRIMARY KEY (id)
 );
 
 alter table comments

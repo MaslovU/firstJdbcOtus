@@ -38,14 +38,14 @@ public class Book {
     private String name;
 
     @Fetch(FetchMode.JOIN)
-    @ManyToOne(targetEntity = Genre.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Genre.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "genre_id")
-    private Genre genreId;
+    private Genre genre;
 
     @Fetch(FetchMode.JOIN)
     @ManyToOne(targetEntity = YearOfPublish.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "year_id")
-    private YearOfPublish yearId;
+    private YearOfPublish year;
 
     @Fetch(FetchMode.SUBSELECT)
     @ManyToMany(targetEntity = Author.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
@@ -55,6 +55,6 @@ public class Book {
 
     @Fetch(FetchMode.SUBSELECT)
     @OneToMany(targetEntity = Comment.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "book_id")
     private List<Comment> listOfComment;
 }
