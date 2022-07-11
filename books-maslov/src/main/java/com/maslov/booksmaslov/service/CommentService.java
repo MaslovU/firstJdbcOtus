@@ -2,15 +2,15 @@ package com.maslov.booksmaslov.service;
 
 import com.maslov.booksmaslov.domain.Comment;
 
-import java.util.Set;
+import java.util.List;
 
 public interface CommentService {
 
-    Set<Comment> getAllCommentsForBook();
+    List<Comment> getAllCommentsForBook();
 
-    Set<Comment> createComment();
+    List<Comment> createComment();
 
-    Set<Comment> updateComment();
+    List<Comment> updateComment();
 
-    Set<Comment> deleteComment();
+    List<Comment> deleteComment();
 }
