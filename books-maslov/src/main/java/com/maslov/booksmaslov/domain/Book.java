@@ -48,7 +48,7 @@ public class Book {
     private YearOfPublish year;
 
     @Fetch(FetchMode.SUBSELECT)
-    @ManyToMany(targetEntity = Author.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Author.class, cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "book_authors", joinColumns = {@JoinColumn(name = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private List<Author> author;

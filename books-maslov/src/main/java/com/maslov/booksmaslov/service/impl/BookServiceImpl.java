@@ -1,11 +1,13 @@
 package com.maslov.booksmaslov.service.impl;
 
+import com.maslov.booksmaslov.dao.AuthorDao;
 import com.maslov.booksmaslov.dao.BookDao;
 import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
+import com.maslov.booksmaslov.repository.AuthorRepo;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Service
@@ -26,10 +28,12 @@ public class BookServiceImpl implements BookService {
     private final String GET_ALL = "Enter command 'getall' for search your book in list";
 
     private final BookDao bookDao;
+    private final AuthorDao authorDao;
     private final ScannerHelper helper;
 
-    public BookServiceImpl(BookDao bookDao, ScannerHelper helper) {
+    public BookServiceImpl(BookDao bookDao, AuthorDao authorDao, ScannerHelper helper) {
         this.bookDao = bookDao;
+        this.authorDao = authorDao;
         this.helper = helper;
     }
 
@@ -91,18 +95,33 @@ public class BookServiceImpl implements BookService {
         System.out.println("Enter name of the book");
         String name = helper.getFromUser();
         System.out.println("Enter name of the author");
-        Author authorAr = new Author(0, helper.getFromUser());
-        val author = Collections.singletonList(authorAr);
+        String authorName = helper.getFromUser();
+        long authorId = getAuthorId(authorName);
+        Author author = Author.builder().id(authorId).name(authorName).build();
+        val authors = Collections.singletonList(author);
         System.out.println("Enter years of publish");
-        String yearStr = helper.getFromUser();
-        val year = new YearOfPublish(0, yearStr);
+        val year = YearOfPublish.builder().dateOfPublish(helper.getFromUser()).build();
         System.out.println("Enter name of the genre");
-        String genreStr = helper.getFromUser();
-        val genre = new Genre(0, genreStr);
+        val genre = Genre.builder().name(helper.getFromUser()).build();
         System.out.println("You can add comment to this book");
-        val comment = new Comment(0, helper.getFromUser());
+        val comment = Comment.builder().commentForBook(helper.getFromUser()).build();
         List<Comment> comments = new ArrayList<>();
         comments.add(comment);
-        return new Book(0, name, genre, year, author, comments);
+        Book book = new Book();
+        book.setAuthor(authors);
+        book.setName(name);
+        book.setGenre(genre);
+        book.setListOfComment(comments);
+        book.setYear(year);
+        return book;
+    }
+
+    private long getAuthorId(String authorName) {
+        if (authorDao.findAuthorByText(authorName).isEmpty()) {
+            Author author = authorDao.createAuthor(Author.builder().name(authorName).build());
+            return author.getId();
+        }  else {
+            return authorDao.findAuthorByText(authorName).get(0).getId();
+        }
     }
 }

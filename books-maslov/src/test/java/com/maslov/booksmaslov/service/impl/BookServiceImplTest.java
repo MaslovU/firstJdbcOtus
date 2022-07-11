@@ -59,7 +59,7 @@ class BookServiceImplTest {
     void createBook() {
         List<Author> authors = new ArrayList<>();
         authors.add(new Author(0, "Gorky"));
-        Set<Comment> comments = new HashSet<Comment>();
+        List<Comment> comments = new ArrayList<>();
         comments.add(new Comment(0, "Gorky"));
         Book book = new Book(0, "Gorky", new Genre(0, "Gorky"),
                 new YearOfPublish(0, "Gorky"), authors, comments);
@@ -76,7 +76,7 @@ class BookServiceImplTest {
 
     @Test
     void updateBook() {
-        Book book = new Book(0, "as", new Genre(), new YearOfPublish(), new ArrayList<>(), new HashSet<>());
+        Book book = new Book(0, "as", new Genre(), new YearOfPublish(), new ArrayList<>(), new ArrayList<>());
 
         when(scanner.getIdFromUser()).thenReturn(1);
         when(bookDao.getBookById(1)).thenReturn(Optional.of(book));

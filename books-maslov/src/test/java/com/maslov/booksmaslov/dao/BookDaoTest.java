@@ -57,7 +57,7 @@ class BookDaoTest {
     void getBookById() {
         Book book = bookDao.getBookById(ID).get();
 
-        String name = book.getGenreId().getName();
+        String name = book.getGenre().getName();
 
         List<Author> authors = book.getAuthor();
         List<String> authorsName = new ArrayList<>();
@@ -68,8 +68,8 @@ class BookDaoTest {
         BookModel model = BookModel.builder()
                 .name(book.getName())
                 .authors(String.valueOf(authorsName))
-                .genre(book.getGenreId().getName())
-                .year(book.getYearId().getDateOfPublish())
+                .genre(book.getGenre().getName())
+                .year(book.getYear().getDateOfPublish())
                 .build();
 
         System.out.println(model);
@@ -93,7 +93,7 @@ class BookDaoTest {
         val genre = new Genre(0, "labuda");
         val comment = new Comment(0, "Third");
         val comment2 = new Comment(0, "Five");
-        var comments = Set.of(comment, comment2);
+        var comments = List.of(comment, comment2);
 
         var book = new Book(0, TEST, genre, year, authors, comments);
 
@@ -108,12 +108,12 @@ class BookDaoTest {
         authors.add(new Author(0, AUTHOR));
         Genre genre = new Genre(0, "test");
         YearOfPublish year = new YearOfPublish(0, "2015");
-        Set<Comment> comments = new HashSet<>();
+        List<Comment> comments = new ArrayList<>();
         comments.add(new Comment());
         Book book = Book.builder()
                 .name(TEST)
-                .genreId(genre)
-                .yearId( year)
+                .genre(genre)
+                .year( year)
                 .author( authors)
                 .listOfComment(comments)
                 .build();

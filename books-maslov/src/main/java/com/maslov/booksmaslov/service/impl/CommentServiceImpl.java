@@ -1,11 +1,12 @@
 package com.maslov.booksmaslov.service.impl;
 
+import com.maslov.booksmaslov.dao.BookDao;
+import com.maslov.booksmaslov.dao.CommentDao;
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Comment;
-import com.maslov.booksmaslov.repository.BookDao;
-import com.maslov.booksmaslov.repository.CommentDao;
 import com.maslov.booksmaslov.service.CommentService;
 import com.maslov.booksmaslov.service.ScannerHelper;
+import liquibase.pro.packaged.B;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -27,40 +28,52 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Set<Comment> getAllCommentsForBook() {
-        int idOfBook = getIdForBook();
+    public List<Comment> getAllCommentsForBook() {
+        long idOfBook = getIdForBook();
         return bookDao.getBookById(idOfBook).get().getListOfComment();
     }
 
     @Override
-    public Set<Comment> createComment() {
+    public List<Comment> createComment() {
         int idForBook = getIdForBook();
+        helper.getEmptyString();
         System.out.println("Enter your comment");
-        String comm = helper.getFromUser();
+        Comment comm = new Comment(0, helper.getFromUser());
         Comment addedComment = commentDao.createComment(comm);
-        Set<Comment> commentList = bookDao.getBookById(idForBook).get().getListOfComment();
+        Book bookFromDB = bookDao.getBookById(idForBook).get();
+        List<Comment> commentList = bookFromDB.getListOfComment();
         commentList.add(addedComment);
+        Book book = Book.builder()
+                .name(bookFromDB.getName())
+                .genre(bookFromDB.getGenre())
+                .year(bookFromDB.getYear())
+                .author(bookFromDB.getAuthor())
+                .listOfComment(commentList)
+                .build();
+        bookDao.updateBook(book, bookFromDB);
         return commentList;
     }
 
     @Override
-    public Set<Comment> updateComment() {
+    public List<Comment> updateComment() {
         int idForBook = getIdForBook();
         int idComment = getCommentId(idForBook);
+        helper.getEmptyString();
+        Comment commentFromDB = commentDao.getCommentById(idComment).get();
         System.out.println("Enter correct comment");
         String newComment = helper.getFromUser();
-        commentDao.updateComment(new Comment(idComment, newComment));
+        Comment comment = Comment.builder().commentForBook(newComment).build();
+        commentDao.updateComment(comment, commentFromDB);
         return bookDao.getBookById(idForBook).get().getListOfComment();
     }
 
     @Override
-    public Set<Comment> deleteComment() {
+    public List<Comment> deleteComment() {
         int idForBook = getIdForBook();
-        int idForComment = getCommentId(idForBook);
-        Comment comment = commentDao.getCommentById(idForComment);
+        long idForComment = getCommentId(idForBook);
+        Comment comment = commentDao.getCommentById(idForComment).get();
         commentDao.deleteComment(comment);
-        Set<Comment> commentList = bookDao.getBookById(idForBook).get().getListOfComment();
-        return commentList;
+        return bookDao.getBookById(idForBook).get().getListOfComment();
     }
 
     private int getIdForBook() {
@@ -75,10 +88,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private int getCommentId(int idForBook) {
-        System.out.println("Choose and enter id of comment");
+
         for (Comment c : bookDao.getBookById(idForBook).get().getListOfComment()) {
             System.out.println(c);
         }
+        System.out.println("Choose and enter id of comment");
         return helper.getIdFromUser();
     }
 }

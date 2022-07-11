@@ -1,8 +1,8 @@
-package com.maslov.booksmaslov.repository.impl;
+package com.maslov.booksmaslov.dao;
 
 import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.exception.NoCommentException;
-import com.maslov.booksmaslov.repository.CommentDao;
+import com.maslov.booksmaslov.repository.CommentRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -13,9 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@Import({CommentDaoImpl.class, BookDaoImpl.class})
+@Import({CommentDao.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class CommentDaoImplTest {
+class CommentDaoTest {
     private static final long ID_OF_COMMENT = 1;
     private static final String FIRST_COMM = "first comment";
     private static final String SECOND_COMMENT = "second comment";
@@ -27,23 +27,24 @@ class CommentDaoImplTest {
 
     @Test
     void getCommentById() {
-        Comment comment = dao.getCommentById(ID_OF_COMMENT);
+        Comment comment = dao.getCommentById(ID_OF_COMMENT).get();
 
         assertThat(comment.getCommentForBook()).isEqualTo(FIRST_COMM);
     }
 
     @Test
     void createComment() {
-        long commentId = dao.createComment(SECOND_COMMENT).getId();
+        long commentId = dao.createComment(new Comment(0, SECOND_COMMENT)).getId();
 
-        assertThat(dao.getCommentById(commentId).getCommentForBook()).isEqualTo(SECOND_COMMENT);
+        assertThat(dao.getCommentById(commentId).get().getCommentForBook()).isEqualTo(SECOND_COMMENT);
     }
 
     @Test
     void updateComment() {
-        dao.updateComment(new Comment(ID_OF_COMMENT, UPDATE_COMMENT));
+        Comment commentFromDB = dao.getCommentById(ID_OF_COMMENT).get();
+        dao.updateComment(new Comment(0, UPDATE_COMMENT), commentFromDB);
 
-        assertThat(dao.getCommentById(ID_OF_COMMENT).getCommentForBook()).isEqualTo(UPDATE_COMMENT);
+        assertThat(dao.getCommentById(ID_OF_COMMENT).get().getCommentForBook()).isEqualTo(UPDATE_COMMENT);
     }
 
     @Test

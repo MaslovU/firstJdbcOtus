@@ -4,6 +4,7 @@ import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.repository.AuthorRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @Slf4j
 public class AuthorDao {
 
+    @Autowired
     AuthorRepo authorRepo;
 
     public AuthorDao(AuthorRepo authorRepo) {
