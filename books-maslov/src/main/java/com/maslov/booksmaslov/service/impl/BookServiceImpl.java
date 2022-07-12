@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static java.util.Objects.nonNull;
 
@@ -104,10 +105,7 @@ public class BookServiceImpl implements BookService {
 
         val genre = getGenre(name);
 
-        System.out.println("You can add comment to this book. Split your different comments by dot");
-        val comment = Comment.builder().commentForBook(helper.getFromUser()).build();
-        List<Comment> comments = new ArrayList<>();
-        comments.add(comment);
+        List<Comment> comments = getComments(idOfBook);
 
         Book book = new Book();
         book.setAuthor(authors);
@@ -141,7 +139,7 @@ public class BookServiceImpl implements BookService {
         System.out.println("Enter new names of the authors");
         List<String> authorNames = List.of(helper.getFromUser().split(","));
         List<Author> authors = new ArrayList<>();
-        if (authorNames.isEmpty()) {
+        if (authorNames.get(0).isEmpty() && authorNames.size() == 1) {
             try {
                 return bookDao.getBookById(idOfBook).get().getAuthor();
             } catch (NullPointerException e) {
@@ -186,6 +184,23 @@ public class BookServiceImpl implements BookService {
                 genreId = genreDao.createGenre(Genre.builder().name(genre).build()).getId();
             }
             return Genre.builder().id(genreId).name(genre).build();
+        }
+    }
+
+    private List<Comment> getComments(long ibOfBook) {
+        System.out.println("You can add comment to this book or press enter");
+        String comment = helper.getFromUser();
+        if (comment.isEmpty()) {
+            try {
+                return bookDao.getBookById(ibOfBook).get().getListOfComment();
+            } catch (NoSuchElementException | NullPointerException e) {
+                return new ArrayList<>();
+            }
+        } else {
+            val comm = Comment.builder().commentForBook(comment).build();
+            List<Comment> comments = bookDao.getBookById(ibOfBook).get().getListOfComment();
+            comments.add(comm);
+            return comments;
         }
     }
 }
