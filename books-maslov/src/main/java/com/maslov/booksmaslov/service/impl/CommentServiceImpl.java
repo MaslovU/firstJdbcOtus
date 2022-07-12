@@ -8,6 +8,7 @@ import com.maslov.booksmaslov.service.CommentService;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public List<Comment> createComment() {
         int idForBook = getIdForBook();
         helper.getEmptyString();
@@ -53,6 +55,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public List<Comment> updateComment() {
         int idForBook = getIdForBook();
         int idComment = getCommentId(idForBook);

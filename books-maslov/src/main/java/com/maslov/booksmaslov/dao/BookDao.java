@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.List;
@@ -38,12 +37,10 @@ public class BookDao {
 
     }
 
-    @Transactional
     public Book createBook(Book book) {
         return repo.save(book);
     }
 
-    @Transactional
     public Book updateBook(Book book, Book bookFromDB) {
         BeanUtils.copyProperties(book, bookFromDB, "id");
         return repo.save(bookFromDB);
