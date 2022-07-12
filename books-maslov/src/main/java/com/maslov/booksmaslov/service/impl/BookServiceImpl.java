@@ -9,6 +9,8 @@ import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
+import com.maslov.booksmaslov.exception.NoAuthorException;
+import com.maslov.booksmaslov.exception.NoBookException;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -120,19 +122,25 @@ public class BookServiceImpl implements BookService {
         System.out.println("Enter name of the book");
         String name = helper.getFromUser();
         if (name.isEmpty()) {
-            return bookDao.getBookById(idOfBook).get().getName();
+            try {
+                return bookDao.getBookById(idOfBook).get().getName();
+            } catch (Exception e) {
+                System.out.println("Has not this book, need enter new name");
+                throw new NoBookException("Has not this book, need enter new name");
+            }
+
         } else {
             return name;
         }
     }
 
     private long getAuthorId(String authorName) {
-        if (authorDao.findAuthorByText(authorName).isEmpty()) {
-            Author author = authorDao.createAuthor(Author.builder().name(authorName).build());
-            return author.getId();
-        } else {
-            return authorDao.findAuthorByText(authorName).get(0).getId();
-        }
+            if (authorDao.findAuthorByText(authorName).isEmpty()) {
+                Author author = authorDao.createAuthor(Author.builder().name(authorName).build());
+                return author.getId();
+            } else {
+                return authorDao.findAuthorByText(authorName).get(0).getId();
+            }
     }
 
     private List<Author> getListAuthors(long idOfBook) {
@@ -142,9 +150,9 @@ public class BookServiceImpl implements BookService {
         if (authorNames.get(0).isEmpty() && authorNames.size() == 1) {
             try {
                 return bookDao.getBookById(idOfBook).get().getAuthor();
-            } catch (NullPointerException e) {
-                return new ArrayList<>();
-            }
+            } catch (NoSuchElementException e) {
+                    throw new NoAuthorException("Has not authors for this book. Need enter names");
+                }
         } else {
             for (String s : authorNames) {
                 long authorId = getAuthorId(s);
