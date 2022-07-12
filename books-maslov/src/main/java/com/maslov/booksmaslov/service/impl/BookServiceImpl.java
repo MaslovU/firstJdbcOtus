@@ -2,6 +2,7 @@ package com.maslov.booksmaslov.service.impl;
 
 import com.maslov.booksmaslov.dao.AuthorDao;
 import com.maslov.booksmaslov.dao.BookDao;
+import com.maslov.booksmaslov.dao.GenreDao;
 import com.maslov.booksmaslov.dao.YearDao;
 import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
@@ -28,12 +29,14 @@ public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
     private final AuthorDao authorDao;
     private final YearDao yearDao;
+    private final GenreDao genreDao;
     private final ScannerHelper helper;
 
-    public BookServiceImpl(BookDao bookDao, AuthorDao authorDao, YearDao yearDao, ScannerHelper helper) {
+    public BookServiceImpl(BookDao bookDao, AuthorDao authorDao, YearDao yearDao, GenreDao genreDao, ScannerHelper helper) {
         this.bookDao = bookDao;
         this.authorDao = authorDao;
         this.yearDao = yearDao;
+        this.genreDao = genreDao;
         this.helper = helper;
     }
 
@@ -99,10 +102,9 @@ public class BookServiceImpl implements BookService {
 
         val year = getYear();
 
-        System.out.println("Enter name of the genre");
-        val genre = Genre.builder().name(helper.getFromUser()).build();
+        val genre = getGenre();
 
-        System.out.println("You can add comment to this book");
+        System.out.println("You can add comment to this book. Split your different comments by dot");
         val comment = Comment.builder().commentForBook(helper.getFromUser()).build();
         List<Comment> comments = new ArrayList<>();
         comments.add(comment);
@@ -147,5 +149,17 @@ public class BookServiceImpl implements BookService {
             yearId = yearDao.createYear(YearOfPublish.builder().dateOfPublish(year).build()).getId();
         }
         return YearOfPublish.builder().id(yearId).dateOfPublish(year).build();
+    }
+
+    private Genre getGenre() {
+        System.out.println("Enter name of the genre");
+        String genre = helper.getFromUser();
+        long genreId;
+        try {
+            genreId = genreDao.getGenreByName(genre).getId();
+        } catch (NullPointerException e) {
+            genreId = genreDao.createGenre(Genre.builder().name(genre).build()).getId();
+        }
+        return Genre.builder().id(genreId).name(genre).build();
     }
 }
