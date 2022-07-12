@@ -10,12 +10,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor
 @Slf4j
 public class AuthorDao {
 
-    @Autowired
-    AuthorRepo authorRepo;
+    private final AuthorRepo authorRepo;
 
     public AuthorDao(AuthorRepo authorRepo) {
         this.authorRepo = authorRepo;

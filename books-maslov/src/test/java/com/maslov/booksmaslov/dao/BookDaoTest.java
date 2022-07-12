@@ -21,21 +21,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import({BookDao.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookDaoTest {
-    private static final long ID = 1L;
+    private static final long ID = 3L;
     private static final String JAVA = "java";
     private static final String STUDYING = "study";
     private static final String TEST = "Test";
     private static final String AUTHOR = "author";
     private static final int INDEX_OF_BOOK = 0;
 
-    private static final int EXPECTED_COUNT = 6;
-    public static final long ID_FOR_DELETE = 2L;
+    private static final int EXPECTED_COUNT = 13;
+    public static final long ID_FOR_DELETE = 9L;
     @Autowired
     BookDao bookDao;
 
@@ -97,9 +98,9 @@ class BookDaoTest {
 
         var book = new Book(0, TEST, genre, year, authors, comments);
 
-        bookDao.createBook(book);
+        Book createdBook = bookDao.createBook(book);
 
-        assertThat(bookDao.getBooksByName(TEST).get(INDEX_OF_BOOK).getName()).isEqualTo(TEST);
+        assertThat(createdBook.getName()).isEqualTo(TEST);
     }
 
     @Test
@@ -117,7 +118,7 @@ class BookDaoTest {
                 .author( authors)
                 .listOfComment(comments)
                 .build();
-        Book bookFromDB = bookDao.getBookById(1).get();
+        Book bookFromDB = bookDao.getBookById(5).get();
 
         Book updatedBook = bookDao.updateBook(book, bookFromDB);
 

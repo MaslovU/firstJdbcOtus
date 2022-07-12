@@ -1,13 +1,9 @@
 package com.maslov.booksmaslov.service.impl;
 
-import com.maslov.booksmaslov.domain.Author;
-import com.maslov.booksmaslov.domain.Book;
-import com.maslov.booksmaslov.domain.Comment;
-import com.maslov.booksmaslov.domain.Genre;
-import com.maslov.booksmaslov.domain.YearOfPublish;
-import com.maslov.booksmaslov.repository.BookRepo;
 import com.maslov.booksmaslov.dao.BookDao;
+import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.service.BookService;
+import com.maslov.booksmaslov.service.BookServiceHelper;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,29 +13,25 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@Import(BookDao.class)
+@Import({BookDao.class})
 @SpringJUnitConfig(BookServiceImpl.class)
 class BookServiceImplTest {
 
+    private static final String TEST = "Test";
     @MockBean
     private ScannerHelper scanner;
     @MockBean
     private BookDao bookDao;
+    @MockBean
+    private BookServiceHelper bookServiceHelper;
 
     @Autowired
     BookService service;
@@ -57,34 +49,19 @@ class BookServiceImplTest {
 
     @Test
     void createBook() {
-        List<Author> authors = new ArrayList<>();
-        authors.add(new Author(0, "Gorky"));
-        List<Comment> comments = new ArrayList<>();
-        comments.add(new Comment(0, "Gorky"));
-        Book book = new Book(0, "Gorky", new Genre(0, "Gorky"),
-                new YearOfPublish(0, "Gorky"), authors, comments);
 
-        when(scanner.getFromUser()).thenReturn("any()");
-        when(scanner.getFromUser()).thenReturn("ex");
-        when(scanner.getFromUser()).thenReturn("2020");
-        when(scanner.getFromUser()).thenReturn("Gorky");
+        when(bookServiceHelper.getBookFromUser(0)).thenReturn(Book.builder().name(TEST).build());
 
         service.createBook();
 
-        verify(bookDao, Mockito.times(1)).createBook(book);
+        verify(bookDao, Mockito.times(1)).createBook(Book.builder().name(TEST).build());
     }
 
     @Test
     void updateBook() {
-        Book book = new Book(0, "as", new Genre(), new YearOfPublish(), new ArrayList<>(), new ArrayList<>());
-
-        when(scanner.getIdFromUser()).thenReturn(1);
-        when(bookDao.getBookById(1)).thenReturn(Optional.of(book));
-        when(scanner.getFromUser()).thenReturn("anyString()");
-        when(scanner.getFromUser()).thenReturn("anyString()");
-        when(scanner.getFromUser()).thenReturn("anyString()");
-        when(scanner.getFromUser()).thenReturn("anyString()");
-        when(scanner.getFromUser()).thenReturn("anyString()");
+        when(scanner.getIdFromUser()).thenReturn(5);
+        when(scanner.getEmptyString()).thenReturn("");
+        when(bookDao.getBookById(5)).thenReturn(Optional.ofNullable(Book.builder().name(TEST).build()));
 
         service.updateBook();
 

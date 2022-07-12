@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CommentDaoTest {
     private static final long ID_OF_COMMENT = 1;
-    private static final String FIRST_COMM = "first comment";
+    private static final String FIRST_COMM = "no";
     private static final String SECOND_COMMENT = "second comment";
     private static final String UPDATE_COMMENT = "update comment";
     private static final String ERROR_MESSAGE = "No comment for this ID";

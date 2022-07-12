@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AuthorRepo extends JpaRepository<Author, Long> {
-    public List<Author> findByName(String text);
+    List<Author> findByName(String text);
 }
