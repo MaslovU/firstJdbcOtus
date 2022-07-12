@@ -66,17 +66,18 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book createBook() {
-        return bookDao.createBook(getBookFromUser());
+        return bookDao.createBook(getBookFromUser(0));
     }
 
     @Override
     public void updateBook() {
-        log.debug("Start updating book");
+        log.debug("Start updating book. if you don't want to change the value, click Enter");
         System.out.println(ENTER_ID);
-        int id = helper.getIdFromUser();
+        long id = helper.getIdFromUser();
+        helper.getEmptyString();
         if (id > 0) {
             Book bookFromDB = bookDao.getBookById(id).get();
-            bookDao.updateBook(getBookFromUser(), bookFromDB);
+            bookDao.updateBook(getBookFromUser(id), bookFromDB);
         } else {
             System.out.println(GET_ALL);
         }
@@ -94,15 +95,14 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    private Book getBookFromUser() {
-        System.out.println("Enter name of the book");
-        String name = helper.getFromUser();
+    private Book getBookFromUser(long idOfBook) {
+        String name = getNameOfBook(idOfBook);
 
-        List<Author> authors = getListAuthors();
+        List<Author> authors = getListAuthors(idOfBook);
 
-        val year = getYear();
+        val year = getYear(name);
 
-        val genre = getGenre();
+        val genre = getGenre(name);
 
         System.out.println("You can add comment to this book. Split your different comments by dot");
         val comment = Comment.builder().commentForBook(helper.getFromUser()).build();
@@ -118,48 +118,74 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+    private String getNameOfBook(long idOfBook) {
+        System.out.println("Enter name of the book");
+        String name = helper.getFromUser();
+        if (name.isEmpty()) {
+            return bookDao.getBookById(idOfBook).get().getName();
+        } else {
+            return name;
+        }
+    }
+
     private long getAuthorId(String authorName) {
         if (authorDao.findAuthorByText(authorName).isEmpty()) {
             Author author = authorDao.createAuthor(Author.builder().name(authorName).build());
             return author.getId();
-        }  else {
+        } else {
             return authorDao.findAuthorByText(authorName).get(0).getId();
         }
     }
 
-    private List<Author> getListAuthors() {
-        System.out.println("Enter name of the author");
+    private List<Author> getListAuthors(long idOfBook) {
+        System.out.println("Enter new names of the authors");
         List<String> authorNames = List.of(helper.getFromUser().split(","));
         List<Author> authors = new ArrayList<>();
-        for (String s: authorNames) {
-            long authorId = getAuthorId(s);
-            Author author = Author.builder().id(authorId).name(s).build();
-            authors.add(author);
+        if (authorNames.isEmpty()) {
+            try {
+                return bookDao.getBookById(idOfBook).get().getAuthor();
+            } catch (NullPointerException e) {
+                return new ArrayList<>();
+            }
+        } else {
+            for (String s : authorNames) {
+                long authorId = getAuthorId(s);
+                Author author = Author.builder().id(authorId).name(s).build();
+                authors.add(author);
+            }
+            return authors;
         }
-        return authors;
     }
 
-    private YearOfPublish getYear() {
-        System.out.println("Enter years of publish");
+    private YearOfPublish getYear(String nameOfBook) {
+        System.out.println("Enter new years of publish");
         String year = helper.getFromUser();
-        long yearId;
-        try {
-            yearId = yearDao.getYearByDate(year).getId();
-        } catch (NullPointerException e) {
-            yearId = yearDao.createYear(YearOfPublish.builder().dateOfPublish(year).build()).getId();
+        if (year.isEmpty()) {
+            return yearDao.getYearByDate(bookDao.getBooksByName(nameOfBook).get(0).getYear().getDateOfPublish());
+        } else {
+            long yearId;
+            try {
+                yearId = yearDao.getYearByDate(year).getId();
+            } catch (NullPointerException e) {
+                yearId = yearDao.createYear(YearOfPublish.builder().dateOfPublish(year).build()).getId();
+            }
+            return YearOfPublish.builder().id(yearId).dateOfPublish(year).build();
         }
-        return YearOfPublish.builder().id(yearId).dateOfPublish(year).build();
     }
 
-    private Genre getGenre() {
-        System.out.println("Enter name of the genre");
+    private Genre getGenre(String nameOfBook) {
+        System.out.println("Enter new name of the genre");
         String genre = helper.getFromUser();
-        long genreId;
-        try {
-            genreId = genreDao.getGenreByName(genre).getId();
-        } catch (NullPointerException e) {
-            genreId = genreDao.createGenre(Genre.builder().name(genre).build()).getId();
+        if (genre.isEmpty()) {
+            return genreDao.getGenreByName(bookDao.getBooksByName(nameOfBook).get(0).getGenre().getName());
+        } else {
+            long genreId;
+            try {
+                genreId = genreDao.getGenreByName(genre).getId();
+            } catch (NullPointerException e) {
+                genreId = genreDao.createGenre(Genre.builder().name(genre).build()).getId();
+            }
+            return Genre.builder().id(genreId).name(genre).build();
         }
-        return Genre.builder().id(genreId).name(genre).build();
     }
 }
