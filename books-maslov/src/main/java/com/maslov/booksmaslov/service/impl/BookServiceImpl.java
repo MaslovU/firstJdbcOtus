@@ -2,12 +2,12 @@ package com.maslov.booksmaslov.service.impl;
 
 import com.maslov.booksmaslov.dao.AuthorDao;
 import com.maslov.booksmaslov.dao.BookDao;
+import com.maslov.booksmaslov.dao.YearDao;
 import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
-import com.maslov.booksmaslov.repository.AuthorRepo;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +15,8 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Service
@@ -29,11 +27,13 @@ public class BookServiceImpl implements BookService {
 
     private final BookDao bookDao;
     private final AuthorDao authorDao;
+    private final YearDao yearDao;
     private final ScannerHelper helper;
 
-    public BookServiceImpl(BookDao bookDao, AuthorDao authorDao, ScannerHelper helper) {
+    public BookServiceImpl(BookDao bookDao, AuthorDao authorDao, YearDao yearDao, ScannerHelper helper) {
         this.bookDao = bookDao;
         this.authorDao = authorDao;
+        this.yearDao = yearDao;
         this.helper = helper;
     }
 
@@ -94,19 +94,19 @@ public class BookServiceImpl implements BookService {
     private Book getBookFromUser() {
         System.out.println("Enter name of the book");
         String name = helper.getFromUser();
-        System.out.println("Enter name of the author");
-        String authorName = helper.getFromUser();
-        long authorId = getAuthorId(authorName);
-        Author author = Author.builder().id(authorId).name(authorName).build();
-        val authors = Collections.singletonList(author);
-        System.out.println("Enter years of publish");
-        val year = YearOfPublish.builder().dateOfPublish(helper.getFromUser()).build();
+
+        List<Author> authors = getListAuthors();
+
+        val year = getYear();
+
         System.out.println("Enter name of the genre");
         val genre = Genre.builder().name(helper.getFromUser()).build();
+
         System.out.println("You can add comment to this book");
         val comment = Comment.builder().commentForBook(helper.getFromUser()).build();
         List<Comment> comments = new ArrayList<>();
         comments.add(comment);
+
         Book book = new Book();
         book.setAuthor(authors);
         book.setName(name);
@@ -123,5 +123,29 @@ public class BookServiceImpl implements BookService {
         }  else {
             return authorDao.findAuthorByText(authorName).get(0).getId();
         }
+    }
+
+    private List<Author> getListAuthors() {
+        System.out.println("Enter name of the author");
+        List<String> authorNames = List.of(helper.getFromUser().split(","));
+        List<Author> authors = new ArrayList<>();
+        for (String s: authorNames) {
+            long authorId = getAuthorId(s);
+            Author author = Author.builder().id(authorId).name(s).build();
+            authors.add(author);
+        }
+        return authors;
+    }
+
+    private YearOfPublish getYear() {
+        System.out.println("Enter years of publish");
+        String year = helper.getFromUser();
+        long yearId;
+        try {
+            yearId = yearDao.getYearByDate(year).getId();
+        } catch (NullPointerException e) {
+            yearId = yearDao.createYear(YearOfPublish.builder().dateOfPublish(year).build()).getId();
+        }
+        return YearOfPublish.builder().id(yearId).dateOfPublish(year).build();
     }
 }

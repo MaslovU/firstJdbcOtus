@@ -43,7 +43,7 @@ public class Book {
     private Genre genre;
 
     @Fetch(FetchMode.JOIN)
-    @ManyToOne(targetEntity = YearOfPublish.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = YearOfPublish.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "year_id")
     private YearOfPublish year;
 
