@@ -75,20 +75,19 @@ class BookServiceImplTest {
 
     @Test
     void updateBook() {
-        Book book = new Book(0, "as", new Genre(), new YearOfPublish(), new ArrayList<>(), new HashSet<>());
+        Book book = new Book(1, "as", new Genre(), new YearOfPublish(), new ArrayList<>(), new HashSet<>());
 
         when(scanner.getIdFromUser()).thenReturn(1);
         when(scanner.getFromUser()).thenReturn("str");
         when(scanner.getFromUser()).thenReturn("str");
         when(scanner.getIdFromUser()).thenReturn(1);
         when(scanner.getIdFromUser()).thenReturn(1);
-        when(bookDao.updateBook(anyInt(), anyString(), any(), anyInt()))
-                .thenReturn(Optional.of(book));
+        when(bookDao.updateBook(any())).thenReturn(any());
 
         service.updateBook();
 
         verify(bookDao, Mockito.times(1))
-                .updateBook(anyLong(), anyString(), any(), anyLong());
+                .updateBook(any());
     }
 
     @Test
