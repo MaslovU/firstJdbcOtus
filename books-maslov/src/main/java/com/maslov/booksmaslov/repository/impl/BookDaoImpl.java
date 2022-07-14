@@ -1,5 +1,6 @@
 package com.maslov.booksmaslov.repository.impl;
 
+import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.BookDao;
@@ -66,17 +67,13 @@ public class BookDaoImpl implements BookDao {
 
     @Override
     public Optional<Book> updateBook(long id, String name, String author, long authorId) {
-        List<String> authors = Stream.of(author.split(","))
-                .map(String::trim)
+        Book bookFromDB = em.find(Book.class, id);
+        List<Author> authors = Stream.of(author.split(","))
+                .map((s) ->new Author(authorId, s))
                 .collect(Collectors.toList());
-        Query query = em.createQuery(UPDATE_BOOK_BY_ID);
-        query.setParameter("id", id);
-        query.setParameter("name", name);
-        query.executeUpdate();
-        Query query1 = em.createQuery(UPDATE_AUTHORS_BY_ID);
-        query1.setParameter("author_name", authors);
-        query1.setParameter("author_id", authorId);
-        query1.executeUpdate();
+        Book book = new Book(id, name, bookFromDB.getGenre(), bookFromDB.getYear(), authors, bookFromDB.getListOfComment());
+        em.merge(book);
+        em.merge(authors);
         return getBookById(id);
     }
 
