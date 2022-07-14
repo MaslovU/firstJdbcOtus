@@ -48,7 +48,6 @@ public class YearDaoImpl implements YearDao {
     }
 
     @Override
-    @Transactional
     public YearOfPublish createYear(YearOfPublish year) {
         log.info("Created new Year");
         if (year.getId() == 0) {

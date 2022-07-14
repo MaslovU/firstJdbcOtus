@@ -48,7 +48,6 @@ public class AuthorDaoImpl implements AuthorDao {
     }
 
     @Override
-    @Transactional
     public Author createAuthor(Author author) {
         log.info("Created new Author");
         if (author.getId() == 0) {

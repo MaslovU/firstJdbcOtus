@@ -8,6 +8,7 @@ import com.maslov.booksmaslov.service.CommentService;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
         return bookDao.getBookById(idOfBook).get().getListOfComment();
     }
 
+    @Transactional
     @Override
     public Set<Comment> createComment() {
         int idForBook = getIdForBook();
@@ -43,6 +45,7 @@ public class CommentServiceImpl implements CommentService {
         return commentList;
     }
 
+    @Transactional
     @Override
     public Set<Comment> updateComment() {
         int idForBook = getIdForBook();

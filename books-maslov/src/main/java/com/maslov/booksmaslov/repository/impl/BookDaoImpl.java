@@ -56,7 +56,6 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    @Transactional
     public Book createBook(Book book) {
         if (book.getId() == 0) {
             em.persist(book);
@@ -66,7 +65,6 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    @Transactional
     public Optional<Book> updateBook(long id, String name, String author, long authorId) {
         List<String> authors = Stream.of(author.split(","))
                 .map(String::trim)

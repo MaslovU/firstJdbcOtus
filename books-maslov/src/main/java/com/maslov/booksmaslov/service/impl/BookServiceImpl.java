@@ -11,6 +11,7 @@ import com.maslov.booksmaslov.service.ScannerHelper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -56,6 +57,7 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    @Transactional
     @Override
     public Book createBook() {
         System.out.println("Enter name of the book");
@@ -76,6 +78,7 @@ public class BookServiceImpl implements BookService {
         return bookDao.createBook(new Book(0, name, genre, year, author, comments));
     }
 
+    @Transactional
     @Override
     public void updateBook() {
         System.out.println(ENTER_ID);

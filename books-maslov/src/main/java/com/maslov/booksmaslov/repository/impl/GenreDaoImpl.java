@@ -49,7 +49,6 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    @Transactional
     public Genre createGenre(Genre genre) {
         log.info("Created new Genre");
         if (genre.getId() == 0) {
