@@ -57,7 +57,7 @@ class BookDaoImplTest {
     void getBookById() {
         Book book = bookDao.getBookById(ID).get();
 
-        String name = book.getGenreId().getName();
+        String name = book.getGenre().getName();
 
         List<Author> authors = book.getAuthor();
         List<String> authorsName = new ArrayList<>();
@@ -68,8 +68,8 @@ class BookDaoImplTest {
         BookModel model = BookModel.builder()
                 .name(book.getName())
                 .authors(String.valueOf(authorsName))
-                .genre(book.getGenreId().getName())
-                .year(book.getYearId().getDateOfPublish())
+                .genre(book.getGenre().getName())
+                .year(book.getYear().getDateOfPublish())
                 .build();
 
         System.out.println(model);

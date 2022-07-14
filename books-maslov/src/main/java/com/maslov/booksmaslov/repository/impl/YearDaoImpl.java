@@ -1,7 +1,7 @@
 package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.YearOfPublish;
-import com.maslov.booksmaslov.exception.NoYearException;
+import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.YearDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -53,7 +53,7 @@ public class YearDaoImpl implements YearDao {
         Long yearId = null;
         try {
             yearId = Optional.ofNullable(getYearByDate(year.getDateOfPublish()).getId()).get();
-        } catch (NoYearException e) {
+        } catch (MaslovBookException e) {
             if (isNull(year.getId())) {
                 em.persist(year);
                 return year;
@@ -68,7 +68,7 @@ public class YearDaoImpl implements YearDao {
             return query.getSingleResult();
         } catch (NoResultException e) {
             log.warn("Has not year with name: {}", year);
-            throw new NoYearException(String.format("Has not year with name %s", year));
+            throw new MaslovBookException(String.format("Has not year with name %s", year));
         }
     }
 }

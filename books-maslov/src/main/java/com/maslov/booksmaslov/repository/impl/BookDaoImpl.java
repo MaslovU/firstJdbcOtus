@@ -1,7 +1,7 @@
 package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Book;
-import com.maslov.booksmaslov.exception.NoAuthorException;
+import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.BookDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +93,7 @@ public class BookDaoImpl implements BookDao {
             return query.getResultList();
         } catch (NoResultException e) {
             log.warn("Has not author with name: {}", name);
-            throw new NoAuthorException(String.format("Has not author with name %s", name));
+            throw new MaslovBookException(String.format("Has not author with name %s", name));
         }
     }
 }

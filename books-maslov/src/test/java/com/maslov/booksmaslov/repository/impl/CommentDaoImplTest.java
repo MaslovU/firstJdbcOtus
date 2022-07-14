@@ -1,7 +1,7 @@
 package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Comment;
-import com.maslov.booksmaslov.exception.NoCommentException;
+import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.CommentDao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ class CommentDaoImplTest {
 
         try {
             dao.getCommentById(ID_OF_COMMENT);
-        } catch (NoCommentException e) {
+        } catch (MaslovBookException e) {
             assertEquals(ERROR_MESSAGE, e.getMessage());
         }
     }

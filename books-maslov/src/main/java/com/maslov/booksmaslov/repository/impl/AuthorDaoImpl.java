@@ -1,7 +1,7 @@
 package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Author;
-import com.maslov.booksmaslov.exception.NoAuthorException;
+import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.AuthorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -53,7 +53,7 @@ public class AuthorDaoImpl implements AuthorDao {
         Long authorId = null;
         try {
             authorId = getByName(author.getAuthorName()).get(0).getId();
-        } catch (NoAuthorException | IndexOutOfBoundsException e) {
+        } catch (MaslovBookException | IndexOutOfBoundsException e) {
             if (author.getId() == 0) {
                 em.persist(author);
                 return author;
@@ -68,7 +68,7 @@ public class AuthorDaoImpl implements AuthorDao {
             return query.getResultList();
         } catch (NoResultException e) {
             log.warn("Has not author with name: {}", name);
-            throw new NoAuthorException(String.format("Has not author with name %s", name));
+            throw new MaslovBookException(String.format("Has not author with name %s", name));
         }
     }
 }

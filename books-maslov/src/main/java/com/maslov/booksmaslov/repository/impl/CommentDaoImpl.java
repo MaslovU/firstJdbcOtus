@@ -1,7 +1,7 @@
 package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Comment;
-import com.maslov.booksmaslov.exception.NoCommentException;
+import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.CommentDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -25,7 +25,7 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public Comment getCommentById(long id) {
         if (isNull(em.find(Comment.class, id))) {
-            throw new NoCommentException("No comment for this ID");
+            throw new MaslovBookException("No comment for this ID");
         }
         return em.find(Comment.class, id);
     }

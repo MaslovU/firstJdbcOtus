@@ -1,7 +1,7 @@
 package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Genre;
-import com.maslov.booksmaslov.exception.NoGenreException;
+import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.GenreDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -54,7 +54,7 @@ public class GenreDaoImpl implements GenreDao {
         Long genreId = null;
         try {
             genreId = Optional.ofNullable(getGenreByName(genre.getName()).get(0).getId()).get();
-        } catch (NoGenreException | IndexOutOfBoundsException e) {
+        } catch (MaslovBookException | IndexOutOfBoundsException e) {
             if (genre.getId() == 0) {
                 em.persist(genre);
                 return genre;
@@ -69,7 +69,7 @@ public class GenreDaoImpl implements GenreDao {
             return query.getResultList();
         } catch (NoResultException e) {
             log.warn("Has not author with name: {}", name);
-            throw new NoGenreException(String.format("Has not genre with name %s", name));
+            throw new MaslovBookException(String.format("Has not genre with name %s", name));
         }
     }
 }
