@@ -52,16 +52,10 @@ public class GenreDaoImpl implements GenreDao {
     @Transactional
     public Genre createGenre(Genre genre) {
         log.info("Created new Genre");
-        Long genreId = null;
-        try {
-            genreId = Optional.ofNullable(getGenreByName(genre.getName()).get(0).getId()).get();
-        } catch (MaslovBookException | IndexOutOfBoundsException e) {
-            if (genre.getId() == 0) {
-                em.persist(genre);
-                return genre;
-            }
+        if (genre.getId() == 0) {
+            em.persist(genre);
+            return genre;
         }
-        genre.setId(genreId);
         return em.merge(genre);
     }
 

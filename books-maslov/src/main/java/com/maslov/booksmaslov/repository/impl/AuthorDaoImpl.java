@@ -51,16 +51,10 @@ public class AuthorDaoImpl implements AuthorDao {
     @Transactional
     public Author createAuthor(Author author) {
         log.info("Created new Author");
-        Long authorId = null;
-        try {
-            authorId = getByName(author.getAuthorName()).get(0).getId();
-        } catch (MaslovBookException | IndexOutOfBoundsException e) {
-            if (author.getId() == 0) {
-                em.persist(author);
-                return author;
-            }
+        if (author.getId() == 0) {
+            em.persist(author);
+            return author;
         }
-        author.setId(authorId);
         return em.merge(author);
     }
 

@@ -51,16 +51,10 @@ public class YearDaoImpl implements YearDao {
     @Transactional
     public YearOfPublish createYear(YearOfPublish year) {
         log.info("Created new Year");
-        Long yearId = null;
-        try {
-            yearId = Optional.ofNullable(getYearByDate(year.getDateOfPublish()).getId()).get();
-        } catch (MaslovBookException e) {
-            if (isNull(year.getId())) {
-                em.persist(year);
-                return year;
-            }
+        if (isNull(year.getId())) {
+            em.persist(year);
+            return year;
         }
-        year.setId(yearId);
         return em.merge(year);
     }
 
