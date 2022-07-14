@@ -2,6 +2,7 @@ package com.maslov.booksmaslov.service.impl;
 
 import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Comment;
+import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.repository.CommentDao;
 import com.maslov.booksmaslov.service.CommentService;
@@ -30,7 +31,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Set<Comment> getAllCommentsForBook() {
         int idOfBook = getIdForBook();
-        return bookDao.getBookById(idOfBook).get().getListOfComment();
+        return bookDao.getBookById(idOfBook)
+                .orElseThrow(() -> new MaslovBookException("No comments")).getListOfComment();
     }
 
     @Transactional
@@ -40,7 +42,8 @@ public class CommentServiceImpl implements CommentService {
         System.out.println("Enter your comment");
         String comm = helper.getFromUser();
         Comment addedComment = commentDao.createComment(comm);
-        Set<Comment> commentList = bookDao.getBookById(idForBook).get().getListOfComment();
+        Set<Comment> commentList = bookDao.getBookById(idForBook)
+                .orElseThrow(() -> new MaslovBookException("No comments")).getListOfComment();
         commentList.add(addedComment);
         return commentList;
     }
