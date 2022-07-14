@@ -104,10 +104,19 @@ class BookDaoImplTest {
 
     @Test
     void updateBook() {
+        val author = new Author(0, "Lafore");
+        val authors = Collections.singletonList(author);
+        val year = new YearOfPublish(0, "2021");
+        val genre = new Genre(0, "labuda");
+        val comment = new Comment(0, "Third");
+        val comment2 = new Comment(0, "Five");
+        var comments = Set.of(comment, comment2);
 
-        Optional<Book> book = bookDao.updateBook(ID, TEST, TEST, ID);
+        var bookFromDB = new Book(1, TEST, genre, year, authors, comments);
 
-        assertThat(book.get().getName()).isEqualTo(TEST);
+        Book book = bookDao.updateBook(bookFromDB);
+
+        assertThat(book.getName()).isEqualTo(TEST);
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
+import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.ScannerHelper;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 
@@ -90,7 +93,13 @@ public class BookServiceImpl implements BookService {
             String author = helper.getFromUser();
             System.out.println("Enter correct author_id of the book");
             int authorId = helper.getIdFromUser();
-            log.info(bookDao.updateBook(id, name, author, authorId).toString());
+            Book bookFromDB = bookDao.getBookById(id).orElseThrow();
+            bookFromDB.setName(name);
+            List<Author> authors = Stream.of(author.split(","))
+                    .map(s -> new Author(authorId, s))
+                    .collect(Collectors.toList());
+            bookFromDB.setAuthor(authors);
+            bookDao.updateBook(bookFromDB);
         } else {
             System.out.println(GET_ALL);
         }

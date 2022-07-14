@@ -15,8 +15,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_BOOKS;
 import static com.maslov.booksmaslov.sql.SQLConstants.SELECT_BOOK_BY_NAME;
@@ -57,15 +55,8 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public Optional<Book> updateBook(long id, String name, String author, long authorId) {
-        Book bookFromDB = em.find(Book.class, id);
-        List<Author> authors = Stream.of(author.split(","))
-                .map(s -> new Author(authorId, s))
-                .collect(Collectors.toList());
-        Book book = new Book(id, name, bookFromDB.getGenre(), bookFromDB.getYear(), authors, bookFromDB.getListOfComment());
-        em.merge(book);
-        em.merge(authors);
-        return getBookById(id);
+    public Book updateBook(Book book) {
+        return em.merge(book);
     }
 
     @Override

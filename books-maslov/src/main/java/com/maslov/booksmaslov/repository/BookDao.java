@@ -1,5 +1,6 @@
 package com.maslov.booksmaslov.repository;
 
+import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.domain.Book;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface BookDao {
 
     void deleteBook(Long id);
 
-    Optional<Book> updateBook(long id, String name, String author, long authorId);
+    Book updateBook(Book book);
 }
