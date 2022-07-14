@@ -51,7 +51,7 @@ public class YearDaoImpl implements YearDao {
     @Transactional
     public YearOfPublish createYear(YearOfPublish year) {
         log.info("Created new Year");
-        if (isNull(year.getId())) {
+        if (year.getId() == 0) {
             em.persist(year);
             return year;
         }
