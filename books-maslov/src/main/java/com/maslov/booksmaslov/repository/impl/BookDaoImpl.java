@@ -69,7 +69,7 @@ public class BookDaoImpl implements BookDao {
     public Optional<Book> updateBook(long id, String name, String author, long authorId) {
         Book bookFromDB = em.find(Book.class, id);
         List<Author> authors = Stream.of(author.split(","))
-                .map((s) ->new Author(authorId, s))
+                .map(s ->new Author(authorId, s))
                 .collect(Collectors.toList());
         Book book = new Book(id, name, bookFromDB.getGenre(), bookFromDB.getYear(), authors, bookFromDB.getListOfComment());
         em.merge(book);
