@@ -4,6 +4,7 @@ import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.GenreDao;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +19,7 @@ import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_GENRES;
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_GENRE_BY_NAME;
 
 
-@Repository
+@Component
 @Slf4j
 public class GenreDaoImpl implements GenreDao {
 

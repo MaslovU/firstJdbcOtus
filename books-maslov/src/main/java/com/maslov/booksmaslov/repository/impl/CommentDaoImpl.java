@@ -4,6 +4,7 @@ import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.CommentDao;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -12,7 +13,7 @@ import javax.persistence.PersistenceContext;
 import static java.util.Objects.isNull;
 
 @Slf4j
-@Repository
+@Component
 public class CommentDaoImpl implements CommentDao {
 
     @PersistenceContext

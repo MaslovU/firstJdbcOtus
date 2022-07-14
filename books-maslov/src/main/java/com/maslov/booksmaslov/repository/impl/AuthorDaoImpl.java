@@ -4,6 +4,7 @@ import com.maslov.booksmaslov.domain.Author;
 import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.AuthorDao;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,7 @@ import java.util.Optional;
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_AUTHORS;
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_AUTHOR_BY_NAME;
 
-@Repository
+@Component
 @Slf4j
 public class AuthorDaoImpl implements AuthorDao {
 

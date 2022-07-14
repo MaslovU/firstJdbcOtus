@@ -5,6 +5,7 @@ import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.BookDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ import static com.maslov.booksmaslov.sql.SQLConstants.SELECT_BOOK_BY_NAME;
 import static com.maslov.booksmaslov.sql.SQLConstants.UPDATE_AUTHORS_BY_ID;
 import static com.maslov.booksmaslov.sql.SQLConstants.UPDATE_BOOK_BY_ID;
 
-@Repository
+@Component
 @RequiredArgsConstructor
 @Slf4j
 public class BookDaoImpl implements BookDao {
