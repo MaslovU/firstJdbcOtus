@@ -1,7 +1,7 @@
 package com.maslov.booksmaslov.service.impl;
 
-import com.maslov.booksmaslov.dao.BookDao;
 import com.maslov.booksmaslov.domain.Book;
+import com.maslov.booksmaslov.repository.BookRepo;
 import com.maslov.booksmaslov.service.BookService;
 import com.maslov.booksmaslov.service.BookServiceHelper;
 import com.maslov.booksmaslov.service.ScannerHelper;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@Import({BookDao.class})
+//@Import({BookDao.class})
 @SpringJUnitConfig(BookServiceImpl.class)
 class BookServiceImplTest {
 
@@ -29,7 +29,7 @@ class BookServiceImplTest {
     @MockBean
     private ScannerHelper scanner;
     @MockBean
-    private BookDao bookDao;
+    private BookRepo bookRepo;
     @MockBean
     private BookServiceHelper bookServiceHelper;
 
@@ -43,7 +43,7 @@ class BookServiceImplTest {
 
         service.getBook();
 
-        verify(bookDao, Mockito.times(0)).getBookById(1L);
+        verify(bookRepo, Mockito.times(0)).findById(1L);
 
     }
 
@@ -54,19 +54,19 @@ class BookServiceImplTest {
 
         service.createBook();
 
-        verify(bookDao, Mockito.times(1)).createBook(Book.builder().name(TEST).build());
+        verify(bookRepo, Mockito.times(1)).save(Book.builder().name(TEST).build());
     }
 
     @Test
     void updateBook() {
         when(scanner.getIdFromUser()).thenReturn(5);
         when(scanner.getEmptyString()).thenReturn("");
-        when(bookDao.getBookById(5)).thenReturn(Optional.ofNullable(Book.builder().name(TEST).build()));
+        when(bookRepo.findById(5L)).thenReturn(Optional.ofNullable(Book.builder().name(TEST).build()));
 
         service.updateBook();
 
-        verify(bookDao, Mockito.times(1))
-                .updateBook(any(), any());
+        verify(bookRepo, Mockito.times(1))
+                .save(any());
     }
 
     @Test
@@ -75,7 +75,7 @@ class BookServiceImplTest {
 
         service.delBook();
 
-        verify(bookDao, Mockito.times(1)).deleteBook(anyLong());
+        verify(bookRepo, Mockito.times(1)).deleteById(anyLong());
     }
 
     @Test
@@ -84,6 +84,6 @@ class BookServiceImplTest {
 
         service.delBook();
 
-        verify(bookDao, Mockito.times(0)).deleteBook(anyLong());
+        verify(bookRepo, Mockito.times(0)).deleteById(anyLong());
     }
 }

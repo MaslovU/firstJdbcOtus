@@ -6,9 +6,11 @@ import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.model.BookModel;
+import com.maslov.booksmaslov.repository.BookRepo;
 import lombok.val;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -25,7 +27,7 @@ import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import({BookDao.class})
+//@Import({BookDao.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookDaoTest {
     private static final long ID = 3L;
@@ -38,7 +40,7 @@ class BookDaoTest {
     private static final int EXPECTED_COUNT = 13;
     public static final long ID_FOR_DELETE = 9L;
     @Autowired
-    BookDao bookDao;
+    BookRepo bookRepo;
 
     @Autowired
     TestEntityManager em;
@@ -48,7 +50,7 @@ class BookDaoTest {
         SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory().unwrap(SessionFactory.class);
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
-        List<Book> list = bookDao.getAllBook();
+        List<Book> list = bookRepo.findAll();
 
         assertThat(list.size()).isNotZero();
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_COUNT);
@@ -56,7 +58,7 @@ class BookDaoTest {
 
     @Test
     void getBookById() {
-        Book book = bookDao.getBookById(ID).get();
+        Book book = bookRepo.findById(ID).orElseThrow();
 
         String name = book.getGenre().getName();
 
@@ -80,7 +82,7 @@ class BookDaoTest {
 
     @Test
     void getBooksByName() {
-        List<Book> books = bookDao.getBooksByName(JAVA);
+        List<Book> books = bookRepo.getBooksByName(JAVA);
 
         assertThat(books.get(0).getId()).isEqualTo(ID);
     }
@@ -98,7 +100,7 @@ class BookDaoTest {
 
         var book = new Book(0, TEST, genre, year, authors, comments);
 
-        Book createdBook = bookDao.createBook(book);
+        Book createdBook = bookRepo.save(book);
 
         assertThat(createdBook.getName()).isEqualTo(TEST);
     }
@@ -118,18 +120,19 @@ class BookDaoTest {
                 .author( authors)
                 .listOfComment(comments)
                 .build();
-        Book bookFromDB = bookDao.getBookById(5).get();
+        Book bookFromDB = bookRepo.findById(5L).orElseThrow();
+        BeanUtils.copyProperties(book, bookFromDB, "id");
 
-        Book updatedBook = bookDao.updateBook(book, bookFromDB);
+        Book updatedBook = bookRepo.save(bookFromDB);
 
         assertThat(updatedBook.getName()).isEqualTo(TEST);
     }
 
     @Test
     void deleteBook() {
-        List<Book> booksBefore = bookDao.getAllBook();
-        bookDao.deleteBook(ID_FOR_DELETE);
-        List<Book> booksAfter = bookDao.getAllBook();
+        List<Book> booksBefore = bookRepo.findAll();
+        bookRepo.deleteById(ID_FOR_DELETE);
+        List<Book> booksAfter = bookRepo.findAll();
 
         assertThat(booksAfter).hasSize(booksBefore.size() - 1);
     }
