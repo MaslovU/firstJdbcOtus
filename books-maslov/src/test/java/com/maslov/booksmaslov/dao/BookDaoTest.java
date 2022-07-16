@@ -15,15 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -64,7 +60,7 @@ class BookDaoTest {
 
         List<Author> authors = book.getAuthor();
         List<String> authorsName = new ArrayList<>();
-        for (Author a: authors) {
+        for (Author a : authors) {
             authorsName.add(a.getName());
         }
 
@@ -116,8 +112,8 @@ class BookDaoTest {
         Book book = Book.builder()
                 .name(TEST)
                 .genre(genre)
-                .year( year)
-                .author( authors)
+                .year(year)
+                .author(authors)
                 .listOfComment(comments)
                 .build();
         Book bookFromDB = bookRepo.findById(5L).orElseThrow();
