@@ -42,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
         String comm = helper.getFromUser();
         Comment addedComment = commentDao.createComment(comm);
         Set<Comment> commentList = bookDao.getBookById(idForBook)
-                .orElseThrow(() -> new MaslovBookException("No comments")).getListOfComment();
+                .orElseThrow(() -> new MaslovBookException("No comments")).getListOfComments();
         commentList.add(addedComment);
         return commentList;
     }
@@ -55,7 +55,7 @@ public class CommentServiceImpl implements CommentService {
         System.out.println("Enter correct comment");
         String newComment = helper.getFromUser();
         commentDao.updateComment(new Comment(idComment, newComment));
-        return bookDao.getBookById(idForBook).get().getListOfComment();
+        return bookDao.getBookById(idForBook).get().getListOfComments();
     }
 
     @Override
@@ -64,7 +64,7 @@ public class CommentServiceImpl implements CommentService {
         int idForComment = getCommentId(idForBook);
         Comment comment = commentDao.getCommentById(idForComment);
         commentDao.deleteComment(comment);
-        Set<Comment> commentList = bookDao.getBookById(idForBook).get().getListOfComment();
+        Set<Comment> commentList = bookDao.getBookById(idForBook).get().getListOfComments();
         return commentList;
     }
 
@@ -81,7 +81,7 @@ public class CommentServiceImpl implements CommentService {
 
     private int getCommentId(int idForBook) {
         System.out.println("Choose and enter id of comment");
-        for (Comment c : bookDao.getBookById(idForBook).get().getListOfComment()) {
+        for (Comment c : bookDao.getBookById(idForBook).get().getListOfComments()) {
             System.out.println(c);
         }
         return helper.getIdFromUser();

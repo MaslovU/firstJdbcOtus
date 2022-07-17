@@ -39,7 +39,7 @@ public class CommentDaoImpl implements CommentDao {
     public Set<Comment> findCommentsForBookById(Long id) {
         TypedQuery<Book> query = em.createQuery(GET_COMMENTS_FOR_BOOK_BY_ID, Book.class);
         query.setParameter("id", id);
-        return checkResult(query, id).getListOfComment();
+        return checkResult(query, id).getListOfComments();
     }
 
     @Override
