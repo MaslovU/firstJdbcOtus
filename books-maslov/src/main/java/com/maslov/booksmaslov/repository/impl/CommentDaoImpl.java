@@ -13,7 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Set;
 
-import static com.maslov.booksmaslov.sql.SQLConstants.GET_COMMENTS_FOR_BOOK_BY_ID;
+import static com.maslov.booksmaslov.sql.SQLConstants.GET_BOOK_FOR_COMMENTS_BY_ID;
 import static java.util.Objects.isNull;
 
 @Slf4j
@@ -37,7 +37,7 @@ public class CommentDaoImpl implements CommentDao {
 
     @Override
     public Set<Comment> findCommentsForBookById(Long id) {
-        TypedQuery<Book> query = em.createQuery(GET_COMMENTS_FOR_BOOK_BY_ID, Book.class);
+        TypedQuery<Book> query = em.createQuery(GET_BOOK_FOR_COMMENTS_BY_ID, Book.class);
         query.setParameter("id", id);
         return checkResult(query, id).getListOfComments();
     }
