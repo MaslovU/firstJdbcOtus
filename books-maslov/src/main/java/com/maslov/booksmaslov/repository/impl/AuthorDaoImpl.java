@@ -5,8 +5,6 @@ import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.AuthorDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;

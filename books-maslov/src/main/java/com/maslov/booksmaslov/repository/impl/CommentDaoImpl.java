@@ -1,15 +1,19 @@
 package com.maslov.booksmaslov.repository.impl;
 
+import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.CommentDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.Set;
 
+import static com.maslov.booksmaslov.sql.SQLConstants.GET_COMMENTS_FOR_BOOK_BY_ID;
 import static java.util.Objects.isNull;
 
 @Slf4j
@@ -32,6 +36,13 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
+    public Set<Comment> findCommentsForBookById(Long id) {
+        TypedQuery<Book> query = em.createQuery(GET_COMMENTS_FOR_BOOK_BY_ID, Book.class);
+        query.setParameter("id", id);
+        return checkResult(query, id).getListOfComment();
+    }
+
+    @Override
     public Comment createComment(String comment) {
         Comment comm = new Comment(0, comment);
         log.info("Created new Comment");
@@ -47,5 +58,14 @@ public class CommentDaoImpl implements CommentDao {
     @Override
     public void deleteComment(Comment comment) {
         em.remove(em.contains(comment) ? comment : em.merge(comment));
+    }
+
+    private Book checkResult(TypedQuery<Book> query, Long id) {
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            log.warn("Has not author with name: {}", id);
+            throw new MaslovBookException(String.format("Has not author with name %s", id));
+        }
     }
 }

@@ -30,9 +30,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Set<Comment> getAllCommentsForBook() {
-        int idOfBook = getIdForBook();
-        return bookDao.getBookById(idOfBook)
-                .orElseThrow(() -> new MaslovBookException("No comments")).getListOfComment();
+        long idOfBook = getIdForBook();
+        return commentDao.findCommentsForBookById(idOfBook);
     }
 
     @Transactional
