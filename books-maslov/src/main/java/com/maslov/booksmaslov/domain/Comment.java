@@ -18,9 +18,9 @@ import javax.persistence.Table;
 @Table(name = "comments")
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private long id;
+    private long commentId;
 
     @Column(name = "comment_book", nullable = false, unique = true)
     private String commentForBook;

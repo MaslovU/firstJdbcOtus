@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,12 +38,10 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public Set<Comment> createComment() {
-        int idForBook = getIdForBook();
         System.out.println("Enter your comment");
         String comm = helper.getFromUser();
         Comment addedComment = commentDao.createComment(comm);
-        Set<Comment> commentList = bookDao.getBookById(idForBook)
-                .orElseThrow(() -> new MaslovBookException("No comments")).getListOfComments();
+        Set<Comment> commentList = new HashSet<>();
         commentList.add(addedComment);
         return commentList;
     }
@@ -72,11 +71,15 @@ public class CommentServiceImpl implements CommentService {
         System.out.println("Enter name for book");
         String nameOfBook = helper.getFromUser();
         List<Book> listOfBooks = bookDao.getBooksByName(nameOfBook);
-        for (Book b : listOfBooks) {
-            System.out.println(b);
+        if (listOfBooks.isEmpty()) {
+            for (Book b : listOfBooks) {
+                System.out.println(b);
+            }
+            System.out.println("Find id your book and enter it");
+            return helper.getIdFromUser();
+        } else {
+            return 0;
         }
-        System.out.println("Find id your book and enter it");
-        return helper.getIdFromUser();
     }
 
     private int getCommentId(int idForBook) {

@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @Table(name = "year_of_publish")
 public class YearOfPublish {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "year", nullable = false, unique = true)

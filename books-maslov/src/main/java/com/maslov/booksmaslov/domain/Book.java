@@ -33,7 +33,7 @@ import java.util.Set;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long bookId;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -49,12 +49,12 @@ public class Book {
     private YearOfPublish year;
 
     @ManyToMany(targetEntity = Author.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinTable(name = "book_authors", joinColumns = {@JoinColumn(name = "book_id")},
+    @JoinTable(name = "books_authors", joinColumns = {@JoinColumn(name = "book_id")},
             inverseJoinColumns = {@JoinColumn(name = "author_id")})
     private List<Author> author;
 
     @Fetch(FetchMode.SUBSELECT)
-    @OneToMany(targetEntity = Comment.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id")
+    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
     private Set<Comment> listOfComments;
 }

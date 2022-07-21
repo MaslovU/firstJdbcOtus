@@ -8,6 +8,7 @@ import com.maslov.booksmaslov.domain.YearOfPublish;
 import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.service.BookService;
+import com.maslov.booksmaslov.service.CommentService;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -29,10 +30,12 @@ public class BookServiceImpl implements BookService {
     private final String GET_ALL = "Enter command 'getall' for search your book in list";
 
     private final BookDao bookDao;
+    private final CommentService commentService;
     private final ScannerHelper helper;
 
-    public BookServiceImpl(BookDao bookDao, ScannerHelper helper) {
+    public BookServiceImpl(BookDao bookDao, CommentService commentService, ScannerHelper helper) {
         this.bookDao = bookDao;
+        this.commentService = commentService;
         this.helper = helper;
     }
 
@@ -68,7 +71,7 @@ public class BookServiceImpl implements BookService {
         System.out.println("Enter name of the author");
         Author authorAr = new Author(0, helper.getFromUser());
         val author = Collections.singletonList(authorAr);
-        System.out.println("Enter years.sql of publish");
+        System.out.println("Enter years of publish");
         String yearStr = helper.getFromUser();
         val year = new YearOfPublish(0, yearStr);
         System.out.println("Enter name of the genre");
