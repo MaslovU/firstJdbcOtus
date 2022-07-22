@@ -5,10 +5,8 @@ import com.maslov.booksmaslov.domain.Book;
 import com.maslov.booksmaslov.domain.Comment;
 import com.maslov.booksmaslov.domain.Genre;
 import com.maslov.booksmaslov.domain.YearOfPublish;
-import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.BookDao;
 import com.maslov.booksmaslov.service.BookService;
-import com.maslov.booksmaslov.service.CommentService;
 import com.maslov.booksmaslov.service.ScannerHelper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -30,12 +28,11 @@ public class BookServiceImpl implements BookService {
     private final String GET_ALL = "Enter command 'getall' for search your book in list";
 
     private final BookDao bookDao;
-    private final CommentService commentService;
+
     private final ScannerHelper helper;
 
-    public BookServiceImpl(BookDao bookDao, CommentService commentService, ScannerHelper helper) {
+    public BookServiceImpl(BookDao bookDao, ScannerHelper helper) {
         this.bookDao = bookDao;
-        this.commentService = commentService;
         this.helper = helper;
     }
 
@@ -111,9 +108,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public void delBook() {
         System.out.println(ENTER_ID);
-        long id = helper.getIdFromUser();
+        int id = helper.getIdFromUser();
         if (id > 0) {
-            bookDao.deleteBook(id);
+            bookDao.deleteBook(bookDao.getBookById(id).orElseThrow());
             log.info("Book deleted successfully");
         } else {
             System.out.println(GET_ALL);

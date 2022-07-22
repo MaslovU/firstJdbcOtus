@@ -60,8 +60,8 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public void deleteBook(Long id) {
-        em.remove(id);
+    public void deleteBook(Book book) {
+        em.remove(book);
     }
 
     private List<Book> checkResult(TypedQuery<Book> query, String name) {

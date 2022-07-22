@@ -6,7 +6,6 @@ import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.CommentDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -37,11 +36,11 @@ public class CommentDaoImpl implements CommentDao {
     }
 
     @Override
-//    @Transactional
     public Set<Comment> findCommentsForBookById(Long id) {
         TypedQuery<Book> query = em.createQuery(GET_BOOK_FOR_COMMENTS_BY_ID, Book.class);
         query.setParameter("id", id);
-        return checkResult(query, id).getListOfComments();
+        Book book = checkResult(query, id);
+        return book.getListOfComments();
 
     }
 

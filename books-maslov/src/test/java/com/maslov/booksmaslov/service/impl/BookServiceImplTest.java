@@ -78,11 +78,11 @@ class BookServiceImplTest {
         Book book = new Book(1, "as", new Genre(), new YearOfPublish(), new ArrayList<>(), new HashSet<>());
 
         when(scanner.getIdFromUser()).thenReturn(1);
-        when(scanner.getFromUser()).thenReturn("str");
-        when(scanner.getFromUser()).thenReturn("str");
+        when(scanner.getFromUser()).thenReturn("anyString(");
+        when(scanner.getFromUser()).thenReturn("asadada");
         when(scanner.getIdFromUser()).thenReturn(1);
-        when(scanner.getIdFromUser()).thenReturn(1);
-        when(bookDao.updateBook(any())).thenReturn(any());
+        when(bookDao.getBookById(1)).thenReturn(Optional.of(new Book()));
+        when(bookDao.updateBook(new Book())).thenReturn(new Book());
 
         service.updateBook();
 
@@ -93,10 +93,11 @@ class BookServiceImplTest {
     @Test
     void delBook() {
         when(scanner.getIdFromUser()).thenReturn(1);
+        when(bookDao.getBookById(1)).thenReturn(Optional.of(new Book()));
 
         service.delBook();
 
-        verify(bookDao, Mockito.times(1)).deleteBook(anyLong());
+        verify(bookDao, Mockito.times(1)).deleteBook(any());
     }
 
     @Test
@@ -105,6 +106,6 @@ class BookServiceImplTest {
 
         service.delBook();
 
-        verify(bookDao, Mockito.times(0)).deleteBook(anyLong());
+        verify(bookDao, Mockito.times(0)).deleteBook(any());
     }
 }

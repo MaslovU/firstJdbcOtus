@@ -13,14 +13,13 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 
 @DataJpaTest
 @Import({CommentDaoImpl.class, BookDaoImpl.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CommentDaoImplTest {
     private static final long ID_OF_COMMENT = 1;
-    private static final String FIRST_COMM = "first comment";
+    private static final String FIRST_COMM = "first";
     private static final String SECOND_COMMENT = "second comment";
     private static final String UPDATE_COMMENT = "update comment";
     private static final String ERROR_MESSAGE = "No comment for this ID";
@@ -36,17 +35,17 @@ class CommentDaoImplTest {
     }
 
     @Test
-    void getAllComments() {
+    void getComments() {
         Set<Comment> list = dao.findCommentsForBookById(1L);
-        assertSame(1, assertThat(list.size()));
+        assertThat(list.size()).isEqualTo(6);
     }
 
-    @Test
-    void createComment() {
-        long commentId = dao.createComment(SECOND_COMMENT).getId();
-
-        assertThat(dao.getCommentById(commentId).getCommentForBook()).isEqualTo(SECOND_COMMENT);
-    }
+//    @Test
+//    void createComment() {
+//        long commentId = dao.createComment(SECOND_COMMENT).getId();
+//
+//        assertThat(dao.getCommentById(commentId).getCommentForBook()).isEqualTo(SECOND_COMMENT);
+//    }
 
     @Test
     void updateComment() {

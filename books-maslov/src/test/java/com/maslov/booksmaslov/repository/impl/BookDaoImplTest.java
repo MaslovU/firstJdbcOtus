@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Import;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import({BookDaoImpl.class, AuthorDaoImpl.class, YearDaoImpl.class, GenreDaoImpl.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookDaoImplTest {
-    private static final long ID = 1L;
+    private static final int ID = 1;
     private static final String JAVA = "java";
     private static final String STUDYING = "study";
     private static final String TEST = "Test";
@@ -61,7 +60,7 @@ class BookDaoImplTest {
 
         List<Author> authors = book.getAuthor();
         List<String> authorsName = new ArrayList<>();
-        for (Author a: authors) {
+        for (Author a : authors) {
             authorsName.add(a.getAuthorName());
         }
 
@@ -81,7 +80,7 @@ class BookDaoImplTest {
     void getBooksByName() {
         List<Book> books = bookDao.getBooksByName(JAVA);
 
-        assertThat(books.get(0).getId()).isEqualTo(ID);
+        assertThat(books.get(0).getBookId()).isEqualTo(ID);
     }
 
     @Test
@@ -122,7 +121,7 @@ class BookDaoImplTest {
     @Test
     void deleteBook() {
         List<Book> booksBefore = bookDao.getAllBook();
-        bookDao.deleteBook(ID);
+        bookDao.deleteBook(booksBefore.get(0));
         List<Book> booksAfter = bookDao.getAllBook();
 
         assertThat(booksAfter).hasSize(booksBefore.size() - 1);
