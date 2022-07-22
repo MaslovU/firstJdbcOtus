@@ -5,23 +5,21 @@ import com.maslov.booksmaslov.repository.GenreDao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@JdbcTest
-@Import(GenreDaoImpl.class)
+@DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Import({GenreDaoImpl.class})
 class GenreDaoImplTest {
 
-    private static final int ID = 1;
-    private static final String ID_PYTHON = "2";
+    private static final long ID = 1;
     private static final String NAME = "study";
     private static final String PYTHON = "python";
-    private static final String JS = "JS";
 
     @Autowired
     private GenreDao dao;
@@ -34,32 +32,32 @@ class GenreDaoImplTest {
     }
 
     @Test
-    void getNameById() {
-        Genre genre = dao.getNameById(ID);
-
-        assertThat(genre.getName()).isEqualTo("study");
-    }
-
-    @Test
     void getByName() {
-        Genre genre = dao.getByName(NAME);
+        Genre genre = dao.getGenreByName(NAME).get(0);
 
         assertThat(genre.getName()).isEqualTo(NAME);
     }
 
     @Test
-    void getAuthorId() {
-        String id = dao.getAuthorId(PYTHON);
+    void getGenreById() {
+        Genre genre = dao.getGenreById(ID).get();
 
-        assertThat(id).isEqualTo(ID_PYTHON);
+        assertThat(genre.getName()).isEqualTo(NAME);
+    }
+
+    @Test
+    void getGenreId() {
+        Long id = dao.getGenreByName(NAME).get(0).getId();
+
+        assertThat(id).isEqualTo(ID);
     }
 
     @Test
     void createGenre() {
-        List<Genre> before = dao.getAllGenres();
-        dao.createGenre(JS);
-        List<Genre> after = dao.getAllGenres();
+        Genre genre = new Genre(0, PYTHON);
 
-        assertThat(after).hasSize(before.size() + 1);
+        Genre resGenre = dao.createGenre(genre);
+
+        assertThat(resGenre.getName()).isEqualTo(PYTHON);
     }
 }

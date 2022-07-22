@@ -9,5 +9,4 @@ class BooksMaslovApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

@@ -15,13 +15,13 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "genres")
-public class Genre {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Column(name = "comment_id")
+    private long commentId;
 
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
-
+    @Column(name = "comment_book", nullable = false, unique = true)
+    private String commentForBook;
 }

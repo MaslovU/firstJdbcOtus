@@ -3,15 +3,15 @@ package com.maslov.booksmaslov.repository;
 import com.maslov.booksmaslov.domain.Genre;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GenreDao {
     List<Genre> getAllGenres();
 
-    Genre getNameById(int id);
+    List<Genre> getGenreByName(String name);
 
-    Genre getByName(String name);
+    Optional<Genre> getGenreById(long id);
 
-    int createGenre(String name);
+    Genre createGenre(Genre genre);
 
-    String getAuthorId(String name);
 }

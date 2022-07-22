@@ -5,25 +5,22 @@ import com.maslov.booksmaslov.repository.AuthorDao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.xmlunit.validation.JAXPValidator;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@JdbcTest
+@DataJpaTest
 @Import(AuthorDaoImpl.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class AuthorDaoImplTest {
 
-    public static final String NAME = "lafore";
-    public static final int ID = 1;
-    private static final String JAVA = "java";
+    public static final long ID = 1L;
+    private static final String LAFORE = "lafore";
     private static final String DINNER = "dinner";
-    private static final String EXPECTED_ID = "3";
+    private static final Long EXPECTED_ID = 1L;
     @Autowired
     private AuthorDao dao;
 
@@ -36,41 +33,31 @@ class AuthorDaoImplTest {
 
     @Test
     void getByName() {
-        Author author = dao.getByName(NAME);
+        List<Author> author = dao.getByName(LAFORE);
 
-        assertThat(author.getName()).isEqualTo(NAME);
+        assertThat(author.get(0).getAuthorName()).isEqualTo(LAFORE);
     }
 
     @Test
     void getAuthorById() {
-        Author author = dao.getAuthorById(ID);
+        Author author = dao.getAuthorById(ID).get();
 
-        assertThat(author.getName()).isEqualTo(NAME);
+        assertThat(author.getAuthorName()).isEqualTo(LAFORE);
     }
 
     @Test
     void getAuthorId() {
-        String id = dao.getAuthorId(JAVA);
+        Long id = dao.getByName(LAFORE).get(0).getId();
 
         assertThat(id).isEqualTo(EXPECTED_ID);
     }
 
     @Test
-    void getAuthorIdIfAuthorIsNotExists() {
-        dao.getAuthorId(DINNER);
-        Author author = dao.getByName(DINNER);
-
-        assertThat(author.getName()).isEqualTo(DINNER);
-    }
-
-    @Test
     void createAuthor() {
-        List<Author> allAuthors = dao.getAllAuthors();
-        Collections.sort(allAuthors);
-        int expecredId = allAuthors.get(allAuthors.size() -1).getId();
+        Author author = new Author(0, DINNER);
 
-        int id = dao.createAuthor(DINNER);
+        Author resAuthor = dao.createAuthor(author);
 
-        assertThat(id).isEqualTo(expecredId + 1);
+        assertThat(resAuthor.getAuthorName()).isEqualTo(DINNER);
     }
 }

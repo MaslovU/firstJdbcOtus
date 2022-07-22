@@ -15,13 +15,13 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "genres")
-public class Genre {
+@Table(name = "year_of_publish")
+public class YearOfPublish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
+    @Column(name = "year", nullable = false, unique = true)
+    private String dateOfPublish;
 
 }

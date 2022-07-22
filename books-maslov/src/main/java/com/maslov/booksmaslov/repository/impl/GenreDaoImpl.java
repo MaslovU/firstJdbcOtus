@@ -1,84 +1,69 @@
 package com.maslov.booksmaslov.repository.impl;
 
 import com.maslov.booksmaslov.domain.Genre;
+import com.maslov.booksmaslov.exception.MaslovBookException;
 import com.maslov.booksmaslov.repository.GenreDao;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashMap;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
-import static com.maslov.booksmaslov.sql.SQLConstants.CREATE_GENRE;
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_ALL_GENRES;
-import static com.maslov.booksmaslov.sql.SQLConstants.GET_GENRE_BY_ID;
 import static com.maslov.booksmaslov.sql.SQLConstants.GET_GENRE_BY_NAME;
 
-@RequiredArgsConstructor
+
 @Component
 @Slf4j
 public class GenreDaoImpl implements GenreDao {
-    private final NamedParameterJdbcTemplate jdbc;
+
+    @PersistenceContext
+    private final EntityManager em;
+
+    public GenreDaoImpl(EntityManager em) {
+        this.em = em;
+    }
 
     @Override
     public List<Genre> getAllGenres() {
-        return jdbc.query(GET_ALL_GENRES, new GenreDaoImpl.GenreMapper());
+        var query = em.createQuery(GET_ALL_GENRES, Genre.class);
+        return query.getResultList();
     }
 
     @Override
-    public Genre getNameById(int id) {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", id);
-        try {
-            return jdbc.queryForObject(GET_GENRE_BY_ID, paramMap, new GenreDaoImpl.GenreMapper());
-        } catch (EmptyResultDataAccessException e) {
-            log.error("Book with this id is not exist");
-        }
-        return null;
+    public Optional<Genre> getGenreById(long id) {
+        return Optional.ofNullable(em.find(Genre.class, id));
     }
 
     @Override
-    public Genre getByName(String name) {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("name", name);
-        return jdbc.queryForObject(GET_GENRE_BY_NAME, paramMap, new GenreDaoImpl.GenreMapper());
+    public List<Genre> getGenreByName(String name) {
+        var query = em.createQuery(GET_GENRE_BY_NAME, Genre.class);
+        query.setParameter("name", name);
+        return checkResult(query, name);
     }
 
     @Override
-    public String getAuthorId(String name) {
-        try {
-            return String.valueOf(getByName(name).getId());
-        } catch (EmptyResultDataAccessException e) {
-            return String.valueOf(createGenre(name));
-        }
-    }
-
-    @Override
-    public int createGenre(String name) {
+    public Genre createGenre(Genre genre) {
         log.info("Created new Genre");
-        List<Genre> genres = getAllGenres();
-        Collections.sort(genres);
-        int id = genres.get(genres.size() - 1).getId() + 1;
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("id", id);
-        paramMap.put("name", name);
-        jdbc.update(CREATE_GENRE, paramMap);
-        return id;
+        if (genre.getId() == 0) {
+            em.persist(genre);
+            return genre;
+        }
+        return em.merge(genre);
     }
 
-    private static class GenreMapper implements RowMapper<Genre> {
-        @Override
-        public Genre mapRow(ResultSet resultSet, int i) throws SQLException {
-            Integer id = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            return new Genre(id, name);
+    private List<Genre> checkResult(TypedQuery<Genre> query, String name) {
+        try {
+            return query.getResultList();
+        } catch (NoResultException e) {
+            log.warn("Has not author with name: {}", name);
+            throw new MaslovBookException(String.format("Has not genre with name %s", name));
         }
     }
 }

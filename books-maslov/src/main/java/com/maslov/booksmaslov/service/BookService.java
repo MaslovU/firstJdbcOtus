@@ -1,11 +1,13 @@
 package com.maslov.booksmaslov.service;
 
+import com.maslov.booksmaslov.domain.Book;
+
 public interface BookService {
     void getBook();
 
     void getAllBook();
 
-    void createBook();
+    Book createBook();
 
     void updateBook();
 
